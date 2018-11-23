@@ -1,6 +1,6 @@
 let radX = 0, radY = 0;
 let transVec = [0, 0, 0];
-let zoom = 1;
+let zoom = 0.5;
 export function getTranslationVector() {
     return transVec;
 }

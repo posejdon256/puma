@@ -35,19 +35,19 @@ export function _seenCube() {
 export function _seenDagonal() {
     seenDiagonal = !seenDiagonal;
 }
-export function _getN(newValue) {
+export function _getN() {
     return n;
 }
-export function _getSpeed(newValue) {
+export function _getSpeed() {
     return speed;
 }
-export function _getDisplacement(newValue) {
+export function _getDisplacement() {
     return displacement;
 }
-export function _getDensity(newValue) {
+export function _getDensity() {
     return density;
 }
-export function _getSize(newValue) {
+export function _getSize() {
     return cubeSize;
 }
 export function _getGravitation() {

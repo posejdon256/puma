@@ -24,7 +24,7 @@ export function DrawCube() {
     gl.enableVertexAttribArray(normal);
 
     addData(getCubeVertices(), getCubeIndices(), getNormals());
-    TranslateMatrix(getProjectionMx(), getModelMx());
+    TranslateMatrix(getProjectionMx(), getModelMx(), true);
 
     cleanScrean();
 

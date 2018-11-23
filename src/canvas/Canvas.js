@@ -17,7 +17,7 @@ export default class Canvas extends Component {
     }
     componentDidMount() {
         initWebGL(this.refs.can);
-        setInterval(mainLoop, 1);
+        setInterval(mainLoop, 10);
 
     }
     keyFunction(event) {

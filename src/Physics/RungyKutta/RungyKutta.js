@@ -4,7 +4,7 @@ import { getN } from '../Movement/Movement';
 
 let q = math.matrix([math.cos(math.pi / 4), -math.sin(math.pi / 4), -math.sin(math.pi / 4), math.sin(math.pi / 4)]);
 let w = math.matrix([0, 0, 0]);
-let h = 0.001;
+let h = 0.01;
 const I = getTensor();
 const invI = math.inv(I);
 

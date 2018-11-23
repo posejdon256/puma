@@ -1,7 +1,6 @@
 import math from 'mathjs';
 
 import { _getDensity, _getSize } from '../../datas/CollectAndShareDatas';
-import { getQuaternion } from '../RungyKutta/RungyKutta';
 
 export function getTensor(angle) {
     const a = _getSize();
@@ -30,15 +29,6 @@ function Stainer(p, tensor) {
     return math.add(tensor, tensorCO);
 
 
-}
-function prepareQuaternion() {
-    const _q = getQuaternion();
-    return {
-        w: _q[0],
-        x: _q[1],
-        y: _q[2],
-        z: _q[3]
-    }
 }
 function getMass() {
     const a = _getSize();

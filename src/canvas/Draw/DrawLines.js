@@ -28,7 +28,7 @@ export function DrawLines() {
     gl.enableVertexAttribArray(coord);
 
     //addData(getLinesVertices(), getLinesIndices());
-    TranslateMatrix(getProjectionMxLine(), getModelMxLine());
+    TranslateMatrix(getProjectionMxLine(), getModelMxLine(), false);
 
     //cleanScrean();
 

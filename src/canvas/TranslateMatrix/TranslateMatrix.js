@@ -3,7 +3,7 @@ import { getRotationDatas, getTranslationVector, getZooming } from "../Translati
 import mat4 from 'gl-matrix-mat4';
 import { getQuaternion } from "../../Physics/RungyKutta/RungyKutta";
 
-export function TranslateMatrix(pMatrix, mMatrix) {
+export function TranslateMatrix(pMatrix, mMatrix, rotate) {
 
     const gl = getglCtx();
 
@@ -21,10 +21,13 @@ export function TranslateMatrix(pMatrix, mMatrix) {
     mat4.translate(mxModel, mxModel, getTranslationVector());
     mat4.rotateX(mxModel, mxModel, rot.x);
     mat4.rotateY(mxModel, mxModel, rot.y);
+    if(rotate) {
+        let quater = Array(16);
+        mat4.fromQuat(quater, getQuaternion());
+        mat4.multiply(mxModel, mxModel, quater);
+    }
+    mat4.translate(mxModel, mxModel, [-0.5, -0.5, -0.5]);
     mat4.scale(mxModel, mxModel, getZooming());
-    let quater = Array(16);
-    mat4.fromQuat(quater, getQuaternion());
-    mat4.multiply(mxModel, mxModel, quater);
 
     gl.uniformMatrix4fv(mMatrix, false, mxModel);
 }

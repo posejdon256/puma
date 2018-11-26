@@ -7,7 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import { _setN, _setSize, _setDisplacement, _setDensity, _seenTrayectory, _seenCube, _seenDagonal, _seenGravitation } from '../datas/CollectAndShareDatas';
+import { _setN, _setSize, _setDisplacement, _setDensity, _seenTrayectory, _seenCube, _seenDagonal, _seenGravitation, _setSpeed } from '../datas/CollectAndShareDatas';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -43,7 +43,7 @@ export default class Navbar extends Component {
         this.setState({
             speed: e.target.value
         });
-        _setSize(e.target.value);
+        _setSpeed(e.target.value);
     }
     setDisplacement(e) {
         this.setState({

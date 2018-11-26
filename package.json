@@ -10,6 +10,7 @@
     "mathjs": "^5.2.3",
     "node-sass": "^4.9.4",
     "quaternion": "^1.0.5",
+    "quaternionjs": "0.0.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-scripts": "2.1.1",

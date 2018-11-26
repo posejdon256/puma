@@ -1,6 +1,8 @@
 import math from 'mathjs';
 
 import { _getDensity, _getSize } from '../../datas/CollectAndShareDatas';
+import { rotateByQuternionQ } from './Rotation';
+import quaternion from 'quaternionjs';
 
 export function getTensor(angle) {
     const a = _getSize();
@@ -12,9 +14,13 @@ export function getTensor(angle) {
         [-xy, x_2 + z_2, -yz],
         [-xz, -yz, x_2 + y_2]]
     );
+   let qStart2 = quaternion().fromAxis({x: 0, y: 0, z: 1}, -Math.atan2(1, math.sqrt(2) - 0.001));
+   let qStart = quaternion().fromAxis({x: 1, y: 0, z: 0}, math.pi / 4);
+   qStart = qStart.multi(qStart2);
+   let quater = {x: qStart.array()[0], y: qStart.array()[1], z: qStart.array()[2], w: qStart.array()[3]};
 
-    const p = {x: 1, y: 1, z: 1};
-    tensor = Stainer(p, tensor);
+    tensor = math.multiply(math.multiply(math.transpose(rotateByQuternionQ(quater)), tensor), rotateByQuternionQ(quater));
+    console.table(tensor._data);
     return tensor;
 }
 function Stainer(p, tensor) {
@@ -28,7 +34,6 @@ function Stainer(p, tensor) {
     ]);
     return math.add(tensor, tensorCO);
 
-
 }
 function getMass() {
     const a = _getSize();
@@ -38,8 +43,10 @@ function getMass() {
 function getX2_Y2_Z2() {
     const a = _getSize();
     const density = _getDensity();
-    return 8 * Math.pow(a, 5) * density;
+    return  Math.pow(a, 5) * density / 3;
 }
 function getXY_YZ_XZ() {
-    return 0;
+    const a = _getSize();
+    const density = _getDensity();
+    return Math.pow(a, 5) * density / 4;
 }

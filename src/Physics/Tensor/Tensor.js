@@ -35,10 +35,10 @@ function Stainer(p, tensor) {
     return math.add(tensor, tensorCO);
 
 }
-function getMass() {
+export function getMass() {
     const a = _getSize();
     const density = _getDensity();
-    return 8 * Math.pow(a, 3) * density;
+    return Math.pow(a, 3) * density;
 }
 function getX2_Y2_Z2() {
     const a = _getSize();

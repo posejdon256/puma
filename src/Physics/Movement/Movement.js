@@ -2,6 +2,7 @@ import math from 'mathjs';
 import { _getGravitation, _getSize } from '../../datas/CollectAndShareDatas';
 import { rotateByQuternionQ } from '../Tensor/Rotation';
 import { getQuaternion } from '../RungyKutta/RungyKutta';
+import { getMass } from '../Tensor/Tensor';
 
 export function getN() {
     const a = _getSize();
@@ -14,7 +15,7 @@ export function getN() {
 }
 export function getGravitationVector() { // to jest na pewno git
     const qMatrix = math.transpose(rotateByQuternionQ(prepareQuaternion()));
-    return math.multiply(qMatrix, math.matrix([0, -9.81, 0]));
+    return math.multiply(math.multiply(qMatrix, math.matrix([0, -9.81, 0])), getMass());
 }
 export function prepareQuaternion() {
     const _q = getQuaternion();

@@ -163,15 +163,17 @@ let positions = [
       0,  a,  a,
     ];
   }
+  let start = true;
   export function getCubeVertices() {
       let _a = _getSize();
-      if(_a !== a) {
+      if(_a !== a || start) {
         a = _a;
+        updatePositions();
+        start = false;
         let qStart2 = quaternion().fromAxis({x: 0, y: 0, z: 1}, -Math.atan2(1, math.sqrt(2)));
         let qStart = quaternion().fromAxis({x: 1, y: 0, z: 0}, math.pi / 4);
         qStart = qStart.multi(qStart2);
         let quater = {x: qStart.array()[0], y: qStart.array()[1], z: qStart.array()[2], w: qStart.array()[3]};
-        updatePositions();
         const matrix = math.transpose(rotateByQuternionQ(quater));
         for(let i = 0 ; i < positions.length; i += 3) {
           const rot = math.matrix([ positions[i], positions[i + 1], positions[i + 2]]);

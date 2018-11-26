@@ -36,6 +36,7 @@ export function countNextStep() {
 
     let dw = mul(div(h, 6), sum(sum(sum(k1, mul(k2, 2)), mul(k3, 2)), k4));
     w = (sum(w, dw));
+
     let qPrim = math.matrix([0, 0, 0, 1]);
     let k1Q = countDQ(qPrim, w);
     let k2Q = countDQ(sum(qPrim, mul(h * 0.5, k1Q)), w);
@@ -43,11 +44,12 @@ export function countNextStep() {
     let k4Q = countDQ(sum(qPrim, mul(k3Q, h)), w);
 
     let dq = mul(div(h, 6), sum(sum(sum(k1Q, mul(k2Q, 2)), mul(k3Q, 2)), k4Q));
-    // const len = math.sqrt(math.pow(w._data[0], 2) + math.pow(w._data[1], 2) + math.pow(w._data[2], 2));
-    // w = math.matrix([w._data[0] / len, w._data[1] / len, w._data[2] / len]);
+
     qPrim = sum(qPrim, dq);
-    const multiplied = math.matrix(quaternion(q._data[0], q._data[1], q._data[2], q._data[3]).multi(quaternion(qPrim._data[0], qPrim._data[1], qPrim._data[2], qPrim._data[3])).array());
-    q = multiplied;
+    const quaternionJSCurrent = quaternion(q._data[0], q._data[1], q._data[2], q._data[3]);
+    const quaternionJSNew = quaternion(qPrim._data[0], qPrim._data[1], qPrim._data[2], qPrim._data[3]);
+
+    q = math.matrix(quaternionJSCurrent.multi(quaternionJSNew).array());
     normalizeQuaternion();
 }
 export function getQuaternion() {
@@ -71,9 +73,13 @@ function countDW(W) {
     return math.add(math.multiply(invI, N), math.multiply(invI, math.cross(math.multiply(I, W), W)));
 }
 function countDQ(_q, _w) {
-    const _qData = _q._data;
-    const multiplied = math.matrix(quaternion(_qData[0], _qData[1], _qData[2], _qData[3]).multi(quaternion(_w._data[0], _w._data[1], _w._data[2], 0)).array());
-    const _helpQUaternion = math.multiply(multiplied, 1/2);
 
-    return _helpQUaternion;
+    const _qData = _q._data;
+
+    const quaternionJS1 = quaternion(_qData[0], _qData[1], _qData[2], _qData[3]);
+    const quaternionJSW = quaternion(_w._data[0], _w._data[1], _w._data[2], 0);
+
+    const Qret = math.matrix(quaternionJS1.multi(quaternionJSW).array());
+
+    return math.multiply(Qret, 1/2);
 }

@@ -1,4 +1,4 @@
-import { updateTensor, updateW } from "../Physics/RungyKutta/RungyKutta";
+import { updateTensor, updateW, updateQuaternion } from "../Physics/RungyKutta/RungyKutta";
 
 let n = 100,
     speed = 1,
@@ -19,7 +19,11 @@ export function _setSpeed(newValue) {
     updateW(speed);
 }
 export function _setDisplacement(newValue) {
-    displacement = TryParseInt(newValue, displacement);
+    if(!isNaN(newValue) && newValue.toString().indexOf('.') != -1)
+    {
+        displacement = newValue;
+    }
+    updateQuaternion(displacement);
 }
 export function _setDensity(newValue) {
     density = TryParseInt(newValue, density);
@@ -59,7 +63,7 @@ export function _getGravitation() {
     return  gravitation ? gravitation : false;
 }
 export function _getTrayectory() {
-    return trayectory ? trayectory : 1;
+    return trayectory ? trayectory : false;
 }
 export function _getCubeSeen() {
     return seendCube ? seendCube : true;

@@ -14,7 +14,7 @@ export function getTensor(angle) {
         [-xy, x_2 + z_2, -yz],
         [-xz, -yz, x_2 + y_2]]
     );
-   let qStart2 = quaternion().fromAxis({x: 0, y: 0, z: 1}, -Math.atan2(1, math.sqrt(2) - 0.001));
+   let qStart2 = quaternion().fromAxis({x: 0, y: 0, z: 1}, -Math.atan2(1, math.sqrt(2)));
    let qStart = quaternion().fromAxis({x: 1, y: 0, z: 0}, math.pi / 4);
    qStart = qStart.multi(qStart2);
    let quater = {x: qStart.array()[0], y: qStart.array()[1], z: qStart.array()[2], w: qStart.array()[3]};

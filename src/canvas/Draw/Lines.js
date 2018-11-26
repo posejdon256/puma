@@ -1,30 +1,43 @@
-import { _getDagonalSeen, _seenGravitation, _getSize } from "../../datas/CollectAndShareDatas";
-import { getGravitationVector } from "../../Physics/Movement/Movement";
-import { getW } from "../../Physics/RungyKutta/RungyKutta";
+import { _getDagonalSeen, _seenGravitation, _getSize, _getTrayectory, _getN } from "../../datas/CollectAndShareDatas";
 
+let points = [];
 export function getLinesVertices() {
-    const lines = [];
+    let lines = [];
     const a = _getSize();
-    const gravVec = getGravitationVector();
-    const w = getW();
     if(_getDagonalSeen()) {
-        lines.push(0, 0, 0, 1, 0, 0);
-        lines.push(0, 0, 0, 0, 1, 0);
-        lines.push(0, 0, 0, 0, 0, 1);
-        //lines.push(0, 0, 0, gravVec._data[0], gravVec._data[1], gravVec._data[2]);
-       // lines.push(0, 0, 0, w[0], w[1], w[2]);
         lines.push(0, 0, 0, 0,  a * Math.sqrt(3), 0);
     }
+    lines = lines.concat(points);
     return lines;
 }
+export function addPointToDraw(x, y, z) {
+    if(_getTrayectory()) {
+        if(points.length !== 0) {
+            points.push(x, y, z);
+        }
+        points.push(x, y, z);
+    }
+}
+export function removePointToDraw() {
+    if(_getN() < points.length) {
+        points.shift();
+        points.shift();
+        points.shift();
+
+        points.shift();
+        points.shift();
+        points.shift();
+    }
+}
 export function getLinesIndices() {
-    const lines = [];
+    let lines = [];
     if(_getDagonalSeen()) {
         lines.push(0, 1);
-         lines.push(2, 3);
-         lines.push(4, 5);
-         lines.push(6, 7);
-       //  lines.push(8, 9);
+    }
+    if(_getTrayectory()) {
+        for(let i = lines.length > 0 ? 6 : 0; i < points.length - 3; i += 6) {
+            lines.push(i / 3, (i / 3) + 1);
+        }
     }
     return lines;
 }

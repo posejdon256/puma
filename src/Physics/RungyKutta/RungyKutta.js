@@ -1,15 +1,22 @@
 import math from 'mathjs';
 import { getTensor } from '../Tensor/Tensor';
-import { getN } from '../Movement/Movement';
+import { getN, prepareQuaternion } from '../Movement/Movement';
 import quaternion from 'quaternionjs';
+import { _getSize, _getTrayectory } from '../../datas/CollectAndShareDatas';
+import { addPointToDraw, removePointToDraw } from '../../canvas/Draw/Lines';
+import { rotateByQuternionQ } from '../Tensor/Rotation';
 let q = math.matrix([0, 0, 0, 1]);
 normalizeQuaternion();
 
 let w = math.matrix([0, 10, 0]);
-let h = 0.01;
+let h = 0.001;
 let I = getTensor();
 let invI = math.inv(I);
 
+export function updateQuaternion(angle) {
+    let qNew = quaternion().fromAxis({x: 0, y: 0, z: 1}, angle); 
+    q = math.matrix([qNew.array()[0], qNew.array()[1], qNew.array()[2], qNew.array()[3]]);
+}
 export function updateTensor() {
     I = getTensor();
     invI = math.inv(I);
@@ -50,7 +57,19 @@ export function countNextStep() {
     const quaternionJSNew = quaternion(qPrim._data[0], qPrim._data[1], qPrim._data[2], qPrim._data[3]);
 
     q = math.matrix(quaternionJSCurrent.multi(quaternionJSNew).array());
+    if(_getTrayectory()) {
+        addPointToTrayectory();
+    }
+    
     normalizeQuaternion();
+}
+function addPointToTrayectory() {
+    const rotationMatrix = rotateByQuternionQ(prepareQuaternion(q));
+    const a = _getSize();
+    const p = math.matrix([0, a * math.sqrt(3), 0]);
+    const rotatedP = math.multiply(rotationMatrix, p);
+    addPointToDraw(rotatedP._data[0], rotatedP._data[1], rotatedP._data[2]);
+    removePointToDraw();
 }
 export function getQuaternion() {
    // normalizeQuaternion();

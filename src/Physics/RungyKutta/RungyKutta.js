@@ -9,7 +9,7 @@ let q = math.matrix([0, 0, 0, 1]);
 normalizeQuaternion();
 
 let w = math.matrix([0, 10, 0]);
-let h = 0.001;
+let h = 0.01;
 let I = getTensor();
 let invI = math.inv(I);
 

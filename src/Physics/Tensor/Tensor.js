@@ -23,18 +23,6 @@ export function getTensor(angle) {
     console.table(tensor._data);
     return tensor;
 }
-function Stainer(p, tensor) {
-    const m = getMass();
-    const pow = math.pow;
-    const { x, y, z } = p;
-    const tensorCO = math.matrix([
-        [m * (pow(y, 2) + pow(z, 2)), -m * x * y, -m * x * z],
-        [-m * x * y, m * (pow(x, 2) + pow(z, 2)), -m * y * z],
-        [-m * x * z, -m * y * z, m * (pow(y, 2) + pow(x, 2))]
-    ]);
-    return math.add(tensor, tensorCO);
-
-}
 export function getMass() {
     const a = _getSize();
     const density = _getDensity();

@@ -8,7 +8,7 @@ let n = 100,
     gravitation = false,
     trayectory = false,
     seendCube = true,
-    seenDiagonal = false;
+    seenDiagonal = true;
 
 export function _setN(newValue) {
     n = TryParseInt(newValue, n);

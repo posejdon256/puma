@@ -1,116 +1,37 @@
 import { getMainVertexShader } from "./Shaders/vertShader"
 import { getMainFragmentShader } from "./Shaders/fragShader";
-import { getCubeVertices, getCubeIndices, getNormals } from "../canvas/datas/Cube";
 import { getVertexShaderLine } from "./Shaders/lineVertShader";
 import { getFragmentShaderLine } from "./Shaders/lineFragShader";
-import { getVertexShaderPlane } from "./Shaders/planeVertShader";
-import { getFragmentShaderPlane } from "./Shaders/planeFragShader";
 
-let fShader;
-let vShader;
-
-let fShaderLine;
-let vShaderLine;
-
-let fShaderPlane;
-let vShaderPlane;
-
-let modelMx;
-let projectionMx;
-
-let modelMxLine;
-let projectionMxLine;
-
-let modelMxPlane;
-let projectionMxPlane;
-
-let vertexBuffer;
-let indexBuffer;
-let normalBuffer;
-
-let shaderProgram;
-let shaderProgramLine;
-let shaderProgramPlane;
-
-let gl;
-
-export function getIndexBuffer() {
-  return indexBuffer;
-}
-export function getVertexBuffer() {
-  return vertexBuffer;
-}
-export function getNormalBuffer() {
-  return normalBuffer;
-}
-export function getModelMx(){
-  return modelMx;
-}
-export function getProjectionMx(){
-  return projectionMx;
-}
-export function getModelMxLine() {
-  return modelMxLine;
-}
-export function getModelMxPlane() {
-  return modelMxPlane;
-}
-export function getProjectionMxLine() {
-  return projectionMxLine;
-}
-export function getProjectionMxPlane() {
-  return projectionMxPlane;
-}
-export function getShaderProgram() {
-  return shaderProgram;
-}
-export function getShaderProgramLines() {
-  return shaderProgramLine;
-}
-export function getShaderProgramPlane() {
-  return shaderProgramPlane;
-}
-export function getFragmentShader() {
-  return fShader;
-}
-export function getVertexShader() {
-  return vShader;
-}
-export function getglCtx() {
-    return gl;
+const canvasesSettings = [];
+export function getSettings() {
+  return canvasesSettings;
 }
 export function initWebGL(canvas) {
-      gl = null;
+      let settings = {};
+      settings.gl = null;
       //Pobieranie kontekstu
-      gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      gl.viewportWidth = canvas.width;
-      gl.viewportHeight = canvas.height;
+      settings.gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      settings.gl.viewportWidth = canvas.width;
+      settings.gl.viewportHeight = canvas.height;
 
-      initShaders(gl);
+      initShaders(settings);
 
-      gl.useProgram(shaderProgram);
-      modelMx = gl.getUniformLocation(shaderProgram, "model");
-      projectionMx = gl.getUniformLocation(shaderProgram, "projection");
+      settings.gl.useProgram(settings.shaderProgramLine);
+      settings.modelMxLine = settings.gl.getUniformLocation(settings.shaderProgramLine, "model");
+      settings.projectionMxLine = settings.gl.getUniformLocation(settings.shaderProgramLine, "projection");
 
-      gl.useProgram(shaderProgramLine);
-      modelMxLine = gl.getUniformLocation(shaderProgramLine, "model");
-      projectionMxLine = gl.getUniformLocation(shaderProgramLine, "projection");
-
-      gl.useProgram(shaderProgramPlane);
-      modelMxPlane = gl.getUniformLocation(shaderProgramPlane, "model");
-      projectionMxPlane = gl.getUniformLocation(shaderProgramPlane, "projection");
-
-      initBuffers(gl);
+      initBuffers(settings);
     
     // If we don't have a GL context, give up now
-    if (!gl) {
+    if (!settings.gl) {
       alert("Unable to initialize WebGL. Your browser may not support it.");
-      gl = null;
+      settings.gl = null;
     }
     
-    return gl;
+    return settings.gl;
   }
-  function initShaders(gl) {
+  function initShaders(settings) {
     // Try to grab the standard context. If it fails, fallback to experimental.
     //Pobieranie shaderów jako tekstu
     let vertexShaderText =  getMainVertexShader();
@@ -119,44 +40,36 @@ export function initWebGL(canvas) {
     let vertexShaderTextLine =  getVertexShaderLine();
     let fragmentShaderTextLine = getFragmentShaderLine();
 
-    let vertexShaderTextPlane =  getVertexShaderPlane();
-    let fragmentShaderTextPlane = getFragmentShaderPlane();
+    settings.vShader = CreateShader( settings.gl, vertexShaderText, settings.gl.VERTEX_SHADER );
+    settings.fShader = CreateShader( settings.gl, fragmentShaderText, settings.gl.FRAGMENT_SHADER );
 
-    vShader = CreateShader( gl, vertexShaderText, gl.VERTEX_SHADER );
-    fShader = CreateShader( gl, fragmentShaderText, gl.FRAGMENT_SHADER );
-
-    vShaderLine = CreateShader( gl, vertexShaderTextLine, gl.VERTEX_SHADER );
-    fShaderLine = CreateShader( gl, fragmentShaderTextLine, gl.FRAGMENT_SHADER );
-
-    vShaderPlane = CreateShader( gl, vertexShaderTextPlane, gl.VERTEX_SHADER );
-    fShaderPlane = CreateShader( gl, fragmentShaderTextPlane, gl.FRAGMENT_SHADER );
+    settings.vShaderLine = CreateShader( settings.gl, vertexShaderTextLine, settings.gl.VERTEX_SHADER );
+    settings.fShaderLine = CreateShader( settings.gl, fragmentShaderTextLine, settings.gl.FRAGMENT_SHADER );
     //tworze program shaderowy
-    shaderProgram = gl.createProgram();
-    shaderProgramLine = gl.createProgram();
-    shaderProgramPlane = gl.createProgram();
+    settings.shaderProgram = settings.gl.createProgram();
+    settings.shaderProgramLine = settings.gl.createProgram();
 
-    gl.attachShader(shaderProgram, vShader);
-    gl.attachShader(shaderProgram, fShader);
+    settings.gl.attachShader(settings.shaderProgram, settings.vShader);
+    settings.gl.attachShader(settings.shaderProgram, settings.fShader);
 
-    gl.attachShader(shaderProgramLine, vShaderLine);
-    gl.attachShader(shaderProgramLine, fShaderLine);
-
-    gl.attachShader(shaderProgramPlane, vShaderPlane);
-    gl.attachShader(shaderProgramPlane, fShaderPlane);
-
-    gl.linkProgram(shaderProgram);
-    gl.linkProgram(shaderProgramLine);
-    gl.linkProgram(shaderProgramPlane);
+    settings.gl.attachShader(settings.shaderProgramLine, settings.vShaderLine);
+    settings.gl.attachShader(settings.shaderProgramLine, settings.fShaderLine);
+    
+    settings.gl.linkProgram(settings.shaderProgram);
+    settings.gl.linkProgram(settings.shaderProgramLine);
+    
+    canvasesSettings.push(settings);
+    return settings;
 
   }
-  function initBuffers(gl) {
+  function initBuffers(settings) {
       //init buffers
-    vertexBuffer = gl.createBuffer();
-    indexBuffer = gl.createBuffer();
-    normalBuffer = gl.createBuffer();
-    addData(getCubeVertices(), getCubeIndices(), getNormals());
+    settings.vertexBuffer = settings.gl.createBuffer();
+    settings.indexBuffer = settings.gl.createBuffer();
+    settings.normalBuffer = settings.gl.createBuffer();
   }
-  export function addData(vert, ind, norm) {
+  export function addData(vert, ind, norm, settings) {
+    const {gl, vertexBuffer, normalBuffer, indexBuffer} = settings;
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vert), gl.STATIC_DRAW);
 

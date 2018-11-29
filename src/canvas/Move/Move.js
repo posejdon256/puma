@@ -1,6 +1,5 @@
-import Translate, { getZooming } from "../Translation/Translation";
-import { DrawCube } from "../DrawOnCanvas";
-import { DrawLines } from "../Draw/DrawLines";
+import { DrawLines } from '../Draw/DrawLines';
+import Translate, { getZooming } from '../Translation/Translation';
 
 
 let front = 0;
@@ -23,7 +22,6 @@ function setIntervalForMoving(){
             }
             Translate(trasnlationObject);
             Translate(trasnlationObject);
-            DrawCube();
             DrawLines();
         }, 5);
     }

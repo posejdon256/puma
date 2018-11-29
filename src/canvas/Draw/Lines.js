@@ -9,9 +9,9 @@ export function getLinesVerticesTrayectory() {
 export function addPointToDraw(x, y, z) {
     if(_getTrayectory()) {
         if(points.length !== 0) {
-            points.push(x, y, z);
+            points.push(0, 0, 0);
         }
-        points.push(x, y, z);
+        points.push(0, 0, 0);
     }
 }
 export function removePointToDraw() {
@@ -28,19 +28,26 @@ export function getLinesIndicesTrayectory() {
     }
     return lines;
 }
-export function getLinesVerticesDiagonal() {
+export function getLinesVerticesX() {
     let lines = [];
     const a = _getSize();
-    lines.push(0, 0, 0, 0,  a * Math.sqrt(3), 0);
+    lines.push(0, 0, 0, 1, 0, 0);
     return lines;
 }
-export function getLinesIndicesDiagonal() {
-    return [0, 1];
-}
-export function getLinesVerticesGraviatation() {
+export function getLinesVerticesY() {
     let lines = [];
-    lines.push(0, 0, 0, 0,  -9.81, 0);
+    const a = _getSize();
+    lines.push(0, 0, 0, 0, 1, 0);
     return lines;
+}
+export function getLinesVerticesZ() {
+    let lines = [];
+    const a = _getSize();
+    lines.push(0, 0, 0, 0, 0, 1);
+    return lines;
+}
+export function getLinesIndicesXYZ() {
+    return [0, 1];
 }
 export function getLinesIndicesGravitation() {
     return [0, 1];

@@ -1,8 +1,8 @@
 let fragmentShader  = `
 precision mediump float;
-  
+varying vec4 fragcolor;
 void main() {
-  gl_FragColor = vec4(255.0, 0.0, 0.0, 1.0) ;
+  gl_FragColor = fragcolor;
 }`;
 export function getFragmentShaderLine() {
   return fragmentShader;

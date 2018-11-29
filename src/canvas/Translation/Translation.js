@@ -10,6 +10,9 @@ export function getRotationDatas() {
 export function getZooming() {
     return [zoom, zoom, zoom];
 }
+export function setPosition(vec) {
+    transVec = [vec[0], vec[1], vec[2]];
+}
 export default function Translate(translationObject) {
     const {front, left, top, axisX, axisY, alphaX, alphaY} = translationObject;
     //rotation

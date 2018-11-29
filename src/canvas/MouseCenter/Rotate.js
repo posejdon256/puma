@@ -1,6 +1,5 @@
-import Translate from "../Translation/Translation";
-import { DrawCube } from "../DrawOnCanvas";
-import { DrawLines } from "../Draw/DrawLines";
+import { DrawLines } from '../Draw/DrawLines';
+import Translate from '../Translation/Translation';
 
 
 let lastX;
@@ -42,6 +41,5 @@ export function TakeMouseMove(x, y){
     lastX = x;
     lastY = y;
     Translate(translationObject);
-    DrawCube();
     DrawLines();
 }

@@ -1,11 +1,11 @@
 import Translate, { setPosition } from "../Translation/Translation";
-import { DrawLines } from "../Draw/DrawLines";
 import { quaterion } from "../../Helpers/Quaternion/quaternion";
 import { Lerp, Slerp } from "./QuaternionInterpolation";
 import mat4 from 'gl-matrix-mat4';
 import { EulerLerp } from "./Euler";
 import { TryParseFloat } from "../../Helpers/Parse";
 import { TryParseInt } from "../../datas/CollectAndShareDatas";
+import { DrawArms } from "../Draw/DrawRobotArm";
 
 let start = [-0.6, 0.87, 0];
 let end = [0.5, -0.9, 0];
@@ -110,7 +110,6 @@ export function animationStep() {
     }
     animationQuaternion = slerp ? Slerp(qStart, qEnd, step / divisions).norm() : Lerp(qStart, qEnd, step / divisions).norm();
     mat4.multiply(animationMatrix, animationMatrix, EulerLerp(alfa2, beta2, gamma2, step / divisions, angleStep));
-    DrawLines();
 }
 export function endAnimation() {
     clearInterval(animationId);

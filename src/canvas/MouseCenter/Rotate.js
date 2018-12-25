@@ -1,5 +1,5 @@
-import { DrawLines } from '../Draw/DrawLines';
 import Translate from '../Translation/Translation';
+import { DrawArms } from '../Draw/DrawRobotArm';
 
 
 let lastX;
@@ -41,5 +41,4 @@ export function TakeMouseMove(x, y){
     lastX = x;
     lastY = y;
     Translate(translationObject);
-    DrawLines();
 }

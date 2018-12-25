@@ -1,7 +1,5 @@
 import { getMainVertexShader } from "./Shaders/vertShader"
 import { getMainFragmentShader } from "./Shaders/fragShader";
-import { getVertexShaderLine } from "./Shaders/lineVertShader";
-import { getFragmentShaderLine } from "./Shaders/lineFragShader";
 
 const canvasesSettings = [];
 export function getSettings() {
@@ -17,9 +15,9 @@ export function initWebGL(canvas) {
 
       initShaders(settings);
 
-      settings.gl.useProgram(settings.shaderProgramLine);
-      settings.modelMxLine = settings.gl.getUniformLocation(settings.shaderProgramLine, "model");
-      settings.projectionMxLine = settings.gl.getUniformLocation(settings.shaderProgramLine, "projection");
+      settings.gl.useProgram(settings.shaderProgram);
+      settings.modelMx = settings.gl.getUniformLocation(settings.shaderProgram, "model");
+      settings.projectionMx = settings.gl.getUniformLocation(settings.shaderProgram, "projection");
 
       initBuffers(settings);
     
@@ -37,26 +35,16 @@ export function initWebGL(canvas) {
     let vertexShaderText =  getMainVertexShader();
     let fragmentShaderText = getMainFragmentShader();
 
-    let vertexShaderTextLine =  getVertexShaderLine();
-    let fragmentShaderTextLine = getFragmentShaderLine();
-
     settings.vShader = CreateShader( settings.gl, vertexShaderText, settings.gl.VERTEX_SHADER );
     settings.fShader = CreateShader( settings.gl, fragmentShaderText, settings.gl.FRAGMENT_SHADER );
 
-    settings.vShaderLine = CreateShader( settings.gl, vertexShaderTextLine, settings.gl.VERTEX_SHADER );
-    settings.fShaderLine = CreateShader( settings.gl, fragmentShaderTextLine, settings.gl.FRAGMENT_SHADER );
     //tworze program shaderowy
     settings.shaderProgram = settings.gl.createProgram();
-    settings.shaderProgramLine = settings.gl.createProgram();
 
     settings.gl.attachShader(settings.shaderProgram, settings.vShader);
     settings.gl.attachShader(settings.shaderProgram, settings.fShader);
-
-    settings.gl.attachShader(settings.shaderProgramLine, settings.vShaderLine);
-    settings.gl.attachShader(settings.shaderProgramLine, settings.fShaderLine);
     
     settings.gl.linkProgram(settings.shaderProgram);
-    settings.gl.linkProgram(settings.shaderProgramLine);
     
     canvasesSettings.push(settings);
     return settings;

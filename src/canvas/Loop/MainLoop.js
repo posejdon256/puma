@@ -1,8 +1,7 @@
-import { DrawLines } from "../Draw/DrawLines";
 import { countNextStep } from "../../Physics/RungyKutta/RungyKutta";
+import { DrawArms } from "../Draw/DrawRobotArm";
 
 export function mainLoop(resolve, reject) {
 
         countNextStep();
-        DrawLines();
 }

@@ -1,5 +1,5 @@
-import { DrawLines } from '../Draw/DrawLines';
 import Translate, { getZooming } from '../Translation/Translation';
+import { DrawArms } from '../Draw/DrawRobotArm';
 
 
 let front = 0;
@@ -22,7 +22,6 @@ function setIntervalForMoving(){
             }
             Translate(trasnlationObject);
             Translate(trasnlationObject);
-            DrawLines();
         }, 5);
     }
 }

@@ -12,3 +12,11 @@ export function crossMultiply(v1, v2) {
 export function scalarMultiply(v1, v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
+export function normalize(v) {
+    const length = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    return {
+        x: v.x / length,
+        y: v.y / length,
+        z: v.z / length
+    };
+}

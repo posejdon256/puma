@@ -1,5 +1,4 @@
 import Translate from '../Translation/Translation';
-import { DrawArms } from '../Draw/DrawRobotArm';
 
 
 let lastX;

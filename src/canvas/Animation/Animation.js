@@ -1,11 +1,11 @@
-import Translate, { setPosition } from "../Translation/Translation";
-import { quaterion } from "../../Helpers/Quaternion/quaternion";
-import { Lerp, Slerp } from "./QuaternionInterpolation";
 import mat4 from 'gl-matrix-mat4';
-import { EulerLerp } from "./Euler";
-import { TryParseFloat } from "../../Helpers/Parse";
-import { TryParseInt } from "../../datas/CollectAndShareDatas";
-import { DrawArms } from "../Draw/DrawRobotArm";
+
+import { TryParseInt } from '../../datas/CollectAndShareDatas';
+import { TryParseFloat } from '../../Helpers/Parse';
+import { quaterion } from '../../Helpers/Quaternion/quaternion';
+import Translate, { setPosition } from '../Translation/Translation';
+import { EulerLerp } from './Euler';
+import { Lerp, Slerp } from './QuaternionInterpolation';
 
 let start = [-0.6, 0.87, 0];
 let end = [0.5, -0.9, 0];
@@ -34,23 +34,50 @@ let angleStep;
 
 let animationId;
 
+export function getStartAngles() {
+    return { alfa: alfa1, beta: beta1, gamma: gamma1};
+}
 export function setAlfa1(_alfa) {
-    alfa1 = (TryParseFloat(_alfa, alfa1 / 180) * Math.Pi);
+    let _alfa1 = TryParseFloat(_alfa, alfa1);
+    if(_alfa1 !== alfa1) {
+        _alfa1 = (_alfa1 / 180) * Math.PI;
+    }
+    alfa1 = _alfa1;
 }
 export function setBeta1(_beta) {
-    beta1 = (TryParseFloat(_beta, beta1) / 180) * Math.Pi;
+    let _beta1 = TryParseFloat(_beta, beta1);
+    if(_beta1 !== beta1) {
+        _beta1 = (_beta1 / 180) * Math.PI;
+    }
+    beta1 = _beta1;
 }
 export function setGamma1(_gamma) {
-    gamma1 = (TryParseFloat(_gamma, gamma1) / 180) * Math.Pi;
+    let _gamma1 = TryParseFloat(_gamma, gamma1);
+    if(_gamma1 !== gamma1) {
+        _gamma1 = (_gamma1 / 180) * Math.PI;
+    }
+    gamma1 = _gamma1;
 }
 export function setAlfa2(_alfa) {
-    alfa2 = (TryParseFloat(_alfa, alfa2) / 180) * Math.Pi;
+    let _alfa2 = TryParseFloat(_alfa, alfa2);
+    if(_alfa2 !== alfa2) {
+        _alfa2 = (_alfa2 / 180) * Math.PI;
+    }
+    alfa2 = _alfa2;
 }
 export function setBeta2(_beta) {
-    beta2 = (TryParseFloat(_beta, beta2) / 180) * Math.Pi;
+    let _beta2 = TryParseFloat(_beta, beta2);
+    if(_beta2 !== beta2) {
+        _beta2 = (_beta2 / 180) * Math.PI;
+    }
+    beta2 = _beta2;
 }
 export function setGamma2(_gamma) {
-    gamma2 = (TryParseFloat(_gamma, gamma2) / 180) * Math.Pi;
+    let _gamma2 = TryParseFloat(_gamma, gamma1);
+    if(_gamma2 !== gamma2) {
+        _gamma2 = (_gamma2 / 180) * Math.PI;
+    }
+    gamma2 = _gamma2;
 }
 export function setSpeed(_speed) {
     speed = TryParseInt(_speed, speed);

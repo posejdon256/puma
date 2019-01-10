@@ -1,6 +1,6 @@
 import math from 'mathjs';
 export function rotateByQuternionQ(q) {
-    const p = math.pow;
+   // const p = math.pow;
     const {x, y, z, w} = q;
     const out = [
         [0, 0, 0],

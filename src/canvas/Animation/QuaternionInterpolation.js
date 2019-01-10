@@ -1,5 +1,3 @@
-import { quaterion } from "../../Helpers/Quaternion/quaternion";
-
 export function Lerp(Q, S, t) {
     const D = Q.diff(S).norm();
     return Q.add(D.mulScalar(t)).norm();

@@ -1,4 +1,4 @@
-import { setRenderer, setScene, setCamera, _animate, getTHREE } from '../Animation/AnimationFrame';
+import { getTHREE, setCamera, setRenderer, setScene } from '../Animation/AnimationFrame';
 import { addCylinder, addSmallCylinder, clearCylinderParameters } from '../Geometry/Cylinder';
 
 export function generateArm(container, i) {
@@ -16,7 +16,8 @@ export function generateArm(container, i) {
     scene.add(camera);
     renderer.setSize(WIDTH, HEIGHT);
 
-    camera.position.z = 100;
+    camera.position.z = 150;
+    camera.lookAt(scene.position);
     container.appendChild(renderer.domElement);
     setRenderer(renderer);
     setScene(scene);
@@ -27,9 +28,9 @@ export function generateArm(container, i) {
     addSmallCylinder(i, {x: 0, y: 13, z: 0}, {x: 3.14 / 2, y: 0, z: 0});
     addCylinder(i, {x: 13, y: 0, z: 0}, {x: 3.14 / 2, y: 0, z: 3.14 / 2});
     addSmallCylinder(i, {x: 13, y: 0, z: 0}, {x: 3.14 / 2, y: 0, z: 3.14 / 2});
-    addCylinder(i, {x: 13, y: 0, z: 0}, {x: 3.14 / 2, y: 0, z: 3.14 / 2});
-    addSmallCylinder(i, {x: 13, y: 0, z: 0});
-    addCylinder(i, {x: 0, y: -13, z: 0}, {x: 0, y: 0, z: 3.14/2});
+    addCylinder(i, {x: 0, y: -13, z: 0}, {x: 3.14 / 2, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: -13, z: 0});
+    addCylinder(i, {x: 13, y: 0, z: 0}, {x: 0, y: 0, z: 3.14/2});
 
     
     var spotLight = new THREE.SpotLight(0xffffff);

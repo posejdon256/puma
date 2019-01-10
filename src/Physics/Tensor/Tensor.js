@@ -5,7 +5,7 @@ import { rotateByQuternionQ } from './Rotation';
 import quaternion from 'quaternionjs';
 
 export function getTensor(angle) {
-    const a = _getSize();
+  //  const a = _getSize();
     const x_2 = getX2_Y2_Z2(), y_2 = x_2, z_2 = x_2;
     const xy = getXY_YZ_XZ(), xz = xy, yz = xy;
 

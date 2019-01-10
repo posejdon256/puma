@@ -40,12 +40,14 @@ export default class Canvas extends Component {
             <MuiThemeProvider>
                 <Paper className="ab-canvas-paper">
                     <div ref="can1"
+                    tabindex="0"
                     onKeyDown={this.keyFunction}
                     onKeyUp={this.keyFunction}
                     onMouseDown={this.mouseFunction}
                     onMouseUp={this.mouseFunction}
                     onMouseMove={this.mouseFunction}/>
                     <div ref="can2"
+                    tabindex="0"
                         onKeyDown={this.keyFunction}
                         onKeyUp={this.keyFunction}
                         onMouseDown={this.mouseFunction}

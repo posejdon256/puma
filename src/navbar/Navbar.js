@@ -1,15 +1,24 @@
-import React, { Component } from 'react';
 import './Navbar.scss';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import { _setN, _setSize, _setDisplacement, _setDensity, _seenTrayectory, _seenCube, _seenDagonal, _seenGravitation, _setSpeed } from '../datas/CollectAndShareDatas';
 import { Button, Grid } from '@material-ui/core';
-import { endAnimation, prepareAnimation, setX1, setX2, setY1, setY2, setZ1, setZ2, setW1, setW2, setAlfa1, setAlfa2, setBeta1, setBeta2, setGamma1, setGamma2, setSpeed, setLerpSlerp } from '../canvas/Animation/Animation';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import React, { Component } from 'react';
+
+import {
+    endAnimation,
+    prepareAnimation,
+    setAlfa1,
+    setAlfa2,
+    setBeta1,
+    setBeta2,
+    setGamma1,
+    setGamma2,
+    setSpeed,
+} from '../canvas/Animation/Animation';
+import { updateEffectorAngles } from '../canvas/Geometry/Cylinder';
+import { setL1, setL2, setL3 } from '../datas/CollectAndShareDatas';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -31,6 +40,10 @@ export default class Navbar extends Component {
             gamma2: 40,
             speed: 100,
             slerp: true,
+            l1: 1,
+            l2: 1,
+            l3: 1,
+            l4: 1
         };
         this.startAnimation = this.startAnimation.bind(this);
         this.endAnimation = this.endAnimation.bind(this);
@@ -43,69 +56,41 @@ export default class Navbar extends Component {
         this._setGamma2 = this._setGamma2.bind(this);
 
         this._setSpeed = this._setSpeed.bind(this);
-        this._setSlerp = this._setSlerp.bind(this);
 
-        this._setX1 = this._setX1.bind(this);
-        this._setX2 = this._setX2.bind(this);
-        this._setY1 = this._setY1.bind(this);
-        this._setY2 = this._setY2.bind(this);
-        this._setZ1 = this._setZ1.bind(this);
-        this._setW1 = this._setW1.bind(this);
-        this._setW2 = this._setW2.bind(this);
+        this._setL1 = this._setL1.bind(this);
+        this._setL2 = this._setL2.bind(this);
+        this._setL3 = this._setL3.bind(this);
+        this._setL4 = this._setL4.bind(this);
     }
-    _setX1(e) {
+    _setL4(e) {
         this.setState({
-            x1: e.target.value
+            l4: e.target.value
         });
-        setX1(e.target.value);
     }
-    _setX2(e) {
+    _setL1(e) {
         this.setState({
-            x2: e.target.value
+            l1: e.target.value
         });
-        setX2(e.target.value);
+        setL1(e.target.value);
     }
-    _setY1(e) {
+    _setL2(e) {
         this.setState({
-            y1: e.target.value
+            l2: e.target.value
         });
-        setY1(e.target.value);
+        setL2(e.target.value);
     }
-    _setY2(e) {
+    _setL3(e) {
         this.setState({
-            y2: e.target.value
+            l3: e.target.value
         });
-        setY2(e.target.value);
-    }
-    _setZ1(e) {
-        this.setState({
-            z1: e.target.value
-        });
-        setZ1(e.target.value);
-    }
-    _setZ2(e) {
-        this.setState({
-            z2: e.target.value
-        });
-        setZ2(e.target.value);
-    }
-    _setW1(e) {
-        this.setState({
-            w1: e.target.value
-        });
-        setW1(e.target.value);
-    }
-    _setW2(e) {
-        this.setState({
-            w2: e.target.value
-        });
-        setW2(e.target.value);
+        setL3(e.target.value);
     }
     _setAlfa1(e) {
         this.setState({
             alfa1: e.target.value
         });
         setAlfa1(e.target.value);
+        updateEffectorAngles();
     }
     _setAlfa2(e) {
         this.setState({
@@ -118,6 +103,7 @@ export default class Navbar extends Component {
             beta1: e.target.value
         });
         setBeta1(e.target.value);
+        updateEffectorAngles();
     }
     _setBeta2(e) {
         this.setState({
@@ -130,6 +116,7 @@ export default class Navbar extends Component {
             gamma1: e.target.value
         });
         setGamma1(e.target.value);
+        updateEffectorAngles();
     }
     _setGamma2(e) {
         this.setState({
@@ -143,12 +130,6 @@ export default class Navbar extends Component {
         });
         setSpeed(e.target.value);
     }
-    _setSlerp() {
-        this.setState({
-            slerp: !this.slerp
-        });
-        setLerpSlerp();
-    }
     startAnimation() {
         prepareAnimation();
     }
@@ -161,131 +142,94 @@ export default class Navbar extends Component {
                 <MuiThemeProvider>
                 <Paper className="ab-paper">
                 <Grid container spacing={24}>
-                <Grid item xs = {6}>
-                        <FormGroup column>
-                            <FormControlLabel control={
-                                    <Switch
-                                    checked={this.state.slerp}
-                                    onChange={this._setSlerp}
-                                    value="seenCube"
-                                    />} label="Slerp" />
-                        </FormGroup>
+                    <Grid item xs = {6}>
                         <TextField
-                            label="Quaternion X1"
-                            value={this.state.x1}
-                            onChange={this._setX1}
+                            label="Euler Alpha 1"
+                            onChange={this._setAlfa1}
+                            value={this.state.alfa1}
                             margin="normal"
                             variant="outlined"
                         />
                         <TextField
-                            label="Quaternion Y1"
-                            value={this.state.y1}
-                            onChange={this._setY1}
+                            label="Euler Beta 1"
+                            onChange = {this._setBeta1}
+                            value={this.state.beta1}
                             margin="normal"
                             variant="outlined"
                         />
                         <TextField
-                            label="Quaternion Z1"
-                            value={this.state.z1}
-                            onChange={this._setZ1}
+                            onChange={this._setGamma1}
+                            label="Euler Gamma 1"
+                            value={this.state.gamma1}
                             margin="normal"
                             variant="outlined"
                         />
-                        <TextField
-                            label="Quaternion W1"
-                            onChange={this._setW1}
-                            value={this.state.displacement}
-                            margin="normal"
-                            variant="outlined"
-                        />
-                         <TextField
-                            label="Quaternion X2"
-                            onChange={this._setX2}
-                            value={this.state.x2}
-                            margin="normal"
-                            variant="outlined"
-                        />
-                        <TextField
-                            label="Quaternion Y2"
-                            onChange={this._setY2}
-                            value={this.state.y2}
-                            margin="normal"
-                            variant="outlined"
-                        />
-                        <TextField
-                            label="Quaternion Z2"
-                            onChange={this._setZ2}
-                            value={this.state.z2}
-                            margin="normal"
-                            variant="outlined"
-                        />
-                        <TextField
-                            label="Quaternion W2"
-                            onChange={this._setW1}
-                            value={this.state.w2}
-                            margin="normal"
-                            variant="outlined"
-                        />
-                        </Grid>
-                        <Grid item xs = {6}>
                             <TextField
-                                label="Euler Alpha 1"
-                                onChange={this._setAlfa1}
-                                value={this.state.alfa1}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                            <TextField
-                                label="Euler Beta 1"
-                                onChange = {this._setBeta1}
-                                value={this.state.beta1}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                            <TextField
-                                onChange={this._setGamma1}
-                                label="Euler Gamma 1"
-                                value={this.state.gamma1}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                             <TextField
-                                onChange={this._setAlfa2}
-                                label="Euler Alpha 2"
-                                onChange={this._setAlfa1}
-                                value={this.state.alfa2}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                            <TextField
-                                label="Euler Beta 2"
-                                onChange={this._setBeta2}
-                                value={this.state.beta2}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                            <TextField
-                                label="Euler Gamma"
-                                onChange={this._setBeta2}
-                                value={this.state.gamma2}
-                                margin="normal"
-                                variant="outlined"
-                            />
+                            onChange={this._setAlfa2}
+                            label="Euler Alpha 2"
+                            value={this.state.alfa2}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Euler Beta 2"
+                            onChange={this._setBeta2}
+                            value={this.state.beta2}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Euler Gamma"
+                            onChange={this._setBeta2}
+                            value={this.state.gamma2}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="L1"
+                            onChange={this._setL1}
+                            value={this.state.l1}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="L2"
+                            onChange={this._setL2}
+                            value={this.state.l2}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="L3"
+                            onChange={this._setL3}
+                            value={this.state.l3}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="L4"
+                            onChange={this._setL4}
+                            value={this.state.l4}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Speed"
+                            onChange={this._setSpeed}
+                            value={this.state.speed}
+                            margin="normal"
+                            variant="outlined"
+                        />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                label="Speed"
-                                onChange={this._setSpeed}
-                                value={this.state.speed}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                            </Grid>
-                            <Grid item xs={12}>
-                            <Button variant="contained" color="primary" onClick={this.startAnimation}>Start</Button>
-                            <Button variant="contained" color="secondary" onClick = {this.endAnimation}>Stop</Button>
-                        </Grid>
+                        <Button variant="contained" color="primary" onClick={this.startAnimation}>Start</Button>
+                        <Button variant="contained" color="secondary" onClick = {this.endAnimation}>Stop</Button>
                     </Grid>
+                  </Grid>
                     </Paper>
                 </MuiThemeProvider>
             </div>

@@ -1,4 +1,4 @@
-import { _getDagonalSeen, _seenGravitation, _getSize, _getTrayectory, _getN } from "../../datas/CollectAndShareDatas";
+import { _getN, _getTrayectory } from '../../datas/CollectAndShareDatas';
 
 let points = [];
 export function getLinesVerticesTrayectory() {
@@ -30,19 +30,19 @@ export function getLinesIndicesTrayectory() {
 }
 export function getLinesVerticesX() {
     let lines = [];
-    const a = _getSize();
+  //  const a = _getSize();
     lines.push(0, 0, 0, 1, 0, 0);
     return lines;
 }
 export function getLinesVerticesY() {
     let lines = [];
-    const a = _getSize();
+  //  const a = _getSize();
     lines.push(0, 0, 0, 0, 1, 0);
     return lines;
 }
 export function getLinesVerticesZ() {
     let lines = [];
-    const a = _getSize();
+ //   const a = _getSize();
     lines.push(0, 0, 0, 0, 0, 1);
     return lines;
 }

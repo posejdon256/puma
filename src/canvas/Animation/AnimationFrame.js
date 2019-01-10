@@ -1,5 +1,3 @@
-import { getAllCylinders } from "../Geometry/Cylinder";
-
 let cameras = [],
     renderers = [],
     scenes = [],

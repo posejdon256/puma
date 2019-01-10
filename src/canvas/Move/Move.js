@@ -1,5 +1,4 @@
 import Translate, { getZooming } from '../Translation/Translation';
-import { DrawArms } from '../Draw/DrawRobotArm';
 
 
 let front = 0;
@@ -17,8 +16,8 @@ function setIntervalForMoving(){
             }
             const trasnlationObject = {
                 front: front,
-                left: left,
-                top: top
+                left: left * 100,
+                top: top * 100
             }
             Translate(trasnlationObject);
             Translate(trasnlationObject);

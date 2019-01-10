@@ -1,8 +1,6 @@
 import mat4 from 'gl-matrix-mat4';
 
-import { getQuaternionForM4 } from '../../Physics/RungyKutta/RungyKutta';
-import { getRotationDatas, getTranslationVector, getZooming } from '../Translation/Translation';
-import { getAnimationQuaternion, getAnimationMatrix } from '../Animation/Animation';
+import { getRotationDatas, getZooming } from '../Translation/Translation';
 
 export function TranslateMatrix(pMatrix, mMatrix, gl) {
 

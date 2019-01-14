@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 
 import {
     endAnimation,
-    prepareAnimation,
     setAlfa1,
     setAlfa2,
     setBeta1,
@@ -17,21 +16,13 @@ import {
     setGamma2,
     setSpeed,
 } from '../canvas/Animation/Animation';
-import { updateEffectorAngles } from '../canvas/Geometry/Cylinder';
-import { setL1, setL2, setL3 } from '../datas/CollectAndShareDatas';
+import { setL1, setL2, setL3, setZ1, setY1, setY2, setX1, setX2, setZ2 } from '../datas/CollectAndShareDatas';
+import { _startAnimation } from '../canvas/Animation/AnimationFrame';
 
 export default class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            x1: 0, 
-            y1: 0,
-            z1: 0,
-            w1: 1,
-            x2: 1,
-            y2: 1,
-            z2: 0,
-            w2: 1,
             alfa1: 0,
             beta1: 0,
             gamma1: 0,
@@ -40,10 +31,15 @@ export default class Navbar extends Component {
             gamma2: 40,
             speed: 100,
             slerp: true,
-            l1: 1,
-            l2: 1,
-            l3: 1,
-            l4: 1
+            x1: 60,
+            y1: 0,
+            z1: 0,
+            x2: 60,
+            y2: 0,
+            z2: 0,
+            l1: 30,
+            l2: 30,
+            l3: 30
         };
         this.startAnimation = this.startAnimation.bind(this);
         this.endAnimation = this.endAnimation.bind(this);
@@ -60,12 +56,53 @@ export default class Navbar extends Component {
         this._setL1 = this._setL1.bind(this);
         this._setL2 = this._setL2.bind(this);
         this._setL3 = this._setL3.bind(this);
-        this._setL4 = this._setL4.bind(this);
+
+        this._setX1 = this._setX1.bind(this);
+        this._setY1 = this._setY1.bind(this);
+        this._setZ1 = this._setZ1.bind(this);
+
+        this._setX2 = this._setX2.bind(this);
+        this._setY2 = this._setY2.bind(this);
+        this._setZ2 = this._setZ2.bind(this);
     }
-    _setL4(e) {
+    _setZ2(e) {
         this.setState({
-            l4: e.target.value
+            z2: e.target.value
         });
+        setZ2(e.target.value);
+    }
+    _setY2(e) {
+        this.setState({
+            y2: e.target.value
+        });
+        setY2(e.target.value);
+    }
+    _setX2(e) {
+        this.setState({
+            x2: e.target.value
+        });
+        setX2(e.target.value);
+    }
+    _setZ1(e) {
+        this.setState({
+            z1: e.target.value
+        });
+        setZ1(e.target.value);
+        
+    }
+    _setY1(e) {
+        this.setState({
+            y1: e.target.value
+        });
+        setY1(e.target.value);
+        
+    }
+    _setX1(e) {
+        this.setState({
+            x1: e.target.value
+        });
+        setX1(e.target.value);
+       
     }
     _setL1(e) {
         this.setState({
@@ -90,7 +127,6 @@ export default class Navbar extends Component {
             alfa1: e.target.value
         });
         setAlfa1(e.target.value);
-        updateEffectorAngles();
     }
     _setAlfa2(e) {
         this.setState({
@@ -103,7 +139,7 @@ export default class Navbar extends Component {
             beta1: e.target.value
         });
         setBeta1(e.target.value);
-        updateEffectorAngles();
+      
     }
     _setBeta2(e) {
         this.setState({
@@ -116,7 +152,7 @@ export default class Navbar extends Component {
             gamma1: e.target.value
         });
         setGamma1(e.target.value);
-        updateEffectorAngles();
+       
     }
     _setGamma2(e) {
         this.setState({
@@ -131,7 +167,7 @@ export default class Navbar extends Component {
         setSpeed(e.target.value);
     }
     startAnimation() {
-        prepareAnimation();
+        _startAnimation();
     }
     endAnimation() {
         endAnimation();
@@ -179,8 +215,8 @@ export default class Navbar extends Component {
                             variant="outlined"
                         />
                         <TextField
-                            label="Euler Gamma"
-                            onChange={this._setBeta2}
+                            label="Euler Gamma 2"
+                            onChange={this._setGamma2}
                             value={this.state.gamma2}
                             margin="normal"
                             variant="outlined"
@@ -209,9 +245,44 @@ export default class Navbar extends Component {
                             variant="outlined"
                         />
                         <TextField
-                            label="L4"
-                            onChange={this._setL4}
-                            value={this.state.l4}
+                            label="X1"
+                            onChange={this._setX1}
+                            value={this.state.x1}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Y1"
+                            onChange={this._setY1}
+                            value={this.state.y1}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Z1"
+                            onChange={this._setZ1}
+                            value={this.state.z1}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="X2"
+                            onChange={this._setX2}
+                            value={this.state.x2}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Y2"
+                            onChange={this._setY2}
+                            value={this.state.y2}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Z2"
+                            onChange={this._setZ2}
+                            value={this.state.z2}
                             margin="normal"
                             variant="outlined"
                         />

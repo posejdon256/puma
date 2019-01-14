@@ -1,15 +1,33 @@
 import mat4 from 'gl-matrix-mat4';
 
-import { getL3 } from '../../datas/CollectAndShareDatas';
-import { degreesToRadians } from '../../Helpers/Convertion';
-import { normalize } from '../../Helpers/Vectors';
+import { getL3, getPositionStart, getL2, getL1 } from '../../datas/CollectAndShareDatas';
+import { crossMultiply, DiffPoints, Multiply, normalize, SumPoints, scalarMultiply, getVectorLength } from '../../Helpers/Vectors';
 import { getStartAngles } from '../Animation/Animation';
 import { getScene, getTHREE } from '../Animation/AnimationFrame';
+import { updateEffector } from '../Draw/GenerateEffector';
 
 const cylinders = [];
 const smallCylinders = [];
+let sphere;
 let lastPosition = {x: 0, y: 0, z: 0};
 let lastRotation = {x: 0, y: 0, z: 0};
+export function getLastPosition() {
+    return lastPosition;
+}
+export function addSphere(i, pos) {
+    const THREE = getTHREE();
+    const scene = getScene(i);
+    const geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    const material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+    sphere = new THREE.Mesh( geometry, material );
+    sphere.position.x = pos.x;
+    sphere.position.y = pos.y;
+    sphere.position.z = pos.z;
+    scene.add( sphere );
+}
+export function getLastRotation() {
+    return lastRotation;
+}
 export function addCylinder(i, position, rotation) {
     const THREE = getTHREE();
     const scene = getScene(i);
@@ -71,92 +89,131 @@ function addRotation(rotation) {
     lastRotation.y += rotation.y;
     lastRotation.z += rotation.z;
 }
-export function updateEffectorAngles() {
-    const {alfa, beta, gamma} = getStartAngles();
-    cylinders[3].rotation.x = alfa;
-    cylinders[3].rotation.y = beta;
-    cylinders[3].rotation.z = gamma;
 
-    cylinders[7].rotation.x = alfa;
-    cylinders[7].rotation.y = beta;
-    cylinders[7].rotation.z = gamma;
+export function updateEffectorAnglesCanvas1(alfa, beta, gamma, start) {
+    const angles = [];
+    const scene = getScene(0);
 
-    const v1 = DiffPoints(getLastPoint(smallCylinders[3], {rx: alfa, ry: beta, rz: gamma, px: cylinders[3].position.x, py: cylinders[3].position.y, pz: cylinders[3].position.z}, getL3() * 30),
-    {x: smallCylinders[3].position.x, y: smallCylinders[3].position.y, z: smallCylinders[3].position.z});
-    const v2 = {x: smallCylinders[2].position.x - smallCylinders[3].position.x,
-        y: undefined,
-        z: undefined};
+    const v1 = DiffPoints(getLastPoint({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}, getL3()), start);
 
+    let angle = {x: alfa, y: beta, z: gamma};
+    angles.push({
+        x: angle.x,
+        y: angle.y,
+        z: angle.z
+    });
+    let point = SumPoints(start, Multiply(v1, -1/2));
 
-    setCylinderAllParameters(smallCylinders[3], {rx: alfa, ry: beta, rz: gamma, px: cylinders[3].position.x, py: cylinders[3].position.y, pz: cylinders[3].position.z}, getL3() * 30);
-    setCylinderAllParameters(smallCylinders[7], {rx: alfa, ry: beta, rz: gamma, px: cylinders[7].position.x, py: cylinders[7].position.y, pz: cylinders[7].position.z}, getL3() * 30);
+    setCylinderInPoint(cylinders[3], point, angle);
+    point = SumPoints(start, Multiply(v1, -1));
 
-    const len1 = smallCylinders[3].position.z - smallCylinders[1].position.z;
-    const len2 = smallCylinders[3].position.x - smallCylinders[1].position.x;
-    let z = degreesToRadians(len1);
-    let x = degreesToRadians(len2);
-    const alfa1 = Math.atan2(z, x);
-    smallCylinders[1].rotation.z = alfa1;
+    setCylinderInPoint(smallCylinders[3], point, angle);
 
-    cylinders[1].rotation.y = alfa1;
-    cylinders[1].position.x = smallCylinders[1].position.x + (0.25 * len2);
-    cylinders[1].position.z = smallCylinders[1].position.z + (0.25 * len1);
+    const p1 = smallCylinders[1].position;
+    const _normal = normalize(crossMultiply(smallCylinders[1].position, point));
+    const _v = Multiply(normalize(crossMultiply(DiffPoints(start, point), _normal)), -1);
+    const p2 = SumPoints(point, Multiply(normalize(_v), -getL2()));
+    const p3 = point;
+    const p4 = start;
 
-    smallCylinders[5].rotation.z = alfa1;
+    angle = {x: 0, y: Math.atan2(p3.x, p3.z), z:Math.PI/2};
+    setCylinderInPoint(smallCylinders[1], p1, angle);
+    setCylinderInPoint(smallCylinders[2], p2, angle); 
+    scene.remove(cylinders[1]);
+    const THREE = getTHREE();
+    const geometry = new THREE.CylinderGeometry( 2, 2, parseInt(getVectorLength(DiffPoints(p2, p1)), 10), 32 );
+    const material = new THREE.MeshPhongMaterial({color: 0x0000ff} );
+    const cylinder = new THREE.Mesh( geometry, material );
+    scene.add(cylinder);
+    cylinders[1] = cylinder;
 
-    cylinders[5].rotation.y = alfa1;
-    cylinders[5].position.x = smallCylinders[5].position.x + (0.25 * len2);
-    cylinders[5].position.z = smallCylinders[5].position.z + (0.25 * len1);
+    angle = {x: 0, y: Math.atan2(p3.x, p3.z) - (Math.PI/2), z:  -Math.acos(scalarMultiply(normalize(p1), normalize(DiffPoints(p2, p1))))};  
+    setCylinderInPoint(cylinders[1], SumPoints(p1, Multiply(DiffPoints(p2, p1), 1/2)), angle);
 
-    smallCylinders[2].rotation.z = -alfa1;
-    smallCylinders[2].position.x = smallCylinders[1].position.x + (0.5 * len2);
-    smallCylinders[2].position.z = smallCylinders[1].position.z + (0.5 * len1);
+    let _angle = Math.acos(scalarMultiply(normalize(DiffPoints(p3, p2)), {x: 1, y: 0, z: 0}));
+    console.log(_angle);
+    if(_angle > Math.PI / 4) {
+        angle.z -= Math.acos(scalarMultiply(normalize(DiffPoints(p2, p1)), normalize(DiffPoints(p3, p2))));
+    } else {
+        angle.z += Math.acos(scalarMultiply(normalize(DiffPoints(p2, p1)), normalize(DiffPoints(p3, p2))));
+    }
+    angles.push({
+        x: angle.x,
+        y: angle.y,
+        z: angle.z
+    });
+    updateEffector(angles, start, v1, DiffPoints(p3, p2));
+    setCylinderInPoint(cylinders[2], SumPoints(p2, Multiply(DiffPoints(p3, p2), 1/2)), angle);
 
-    cylinders[2].rotation.y = -alfa1;
-    cylinders[2].position.x = smallCylinders[2].position.x + (0.25 * len2);
-    cylinders[2].position.z = smallCylinders[2].position.z + (0.25 * len1);
-
-    smallCylinders[6].rotation.z = -alfa1;
-    smallCylinders[6].position.x = smallCylinders[5].position.x + (0.5 * len2);
-    smallCylinders[6].position.z = smallCylinders[5].position.z + (0.5 * len1);
-
-    cylinders[6].rotation.y = -alfa1;
-    cylinders[6].position.x = smallCylinders[6].position.x + (0.25 * len2);
-    cylinders[6].position.z = smallCylinders[6].position.z + (0.25 * len1);
-
-    v2.y = (v2.x * v1.y) / v1.x;
-    v2.z = (v2.x * v1.z) / v1.x;
-    smallCylinders[2].position.x = smallCylinders[3].position.x + v2.x;
-    smallCylinders[2].position.y = smallCylinders[3].position.y + v2.y;
-    smallCylinders[2].position.z = smallCylinders[3].position.z + v2.z;
-
-    //clearCylinderParameters();
-    
 }
-function setCylinderAllParameters(cylinder, parameters, l) {
-    cylinder.rotation.x = parameters.rx;
-    cylinder.rotation.y = parameters.ry;
-    cylinder.rotation.z = (3.14 / 2) + parameters.rz;
-
-    let _matrix = mat4.create();
-    _matrix = mat4.rotateX(mat4.create(), _matrix, parameters.rx);
-    _matrix = mat4.rotateY(mat4.create(), _matrix, parameters.ry);
-    _matrix = mat4.rotateZ(mat4.create(), _matrix, parameters.rz);
-
-    let versor = {x: 0, y: 1, z: 0};
-    versor = normalize(versor);
-    let versorMatrix = mat4.create();
-    versorMatrix[0] = versor.x;
-    versorMatrix[1] = versor.y;
-    versorMatrix[2] = versor.z;
-
-    versorMatrix = mat4.multiply(versorMatrix, _matrix, versorMatrix);
-
-    cylinder.position.x = parameters.px + (l / 2) * versorMatrix[0];
-    cylinder.position.y = parameters.py + (l / 2) * versorMatrix[1];
-    cylinder.position.z = parameters.pz + (l / 2) * versorMatrix[2];
+function rotateVector(vector, axis, angle) {
+    const THREE = getTHREE();
+    const _vector = new THREE.Vector3( vector.x, vector.y, vector.z );
+    let _axis;
+    if(axis === "X") {
+        _axis = new THREE.Vector3( 1, 0, 0 );
+    } else if(axis === "Y") {
+        _axis = new THREE.Vector3( 0, 1, 0 );
+    } else {
+        _axis = new THREE.Vector3( 0, 0, 1 );
+    }
+    const newVector = _vector.applyAxisAngle( _axis, angle );
+    return {x: newVector.x, y: newVector.y, z: newVector.z};
 }
-function getLastPoint(cylinder, parameters, l) {
+export function updateEffectorAnglesCanvas2(alfa1, alfa2, alfa3, alfa4, alfa5, q) {
+    const scene = getScene(1);
+    const p0 = {x: 0, y: 0, z: 0};
+    const p1 = SumPoints(p0, {x: 0, y: getL1() - 4, z: 0});
+    const angle1 = {x: 0, y: alfa1, z: Math.PI/2};
+    setCylinderInPoint(smallCylinders[5], p1, angle1);
+
+    scene.remove(cylinders[5]);
+    const THREE = getTHREE();
+    const geometry = new THREE.CylinderGeometry( 2, 2, q, 32 );
+    const material = new THREE.MeshPhongMaterial({color: 0x0000ff} );
+    const cylinder = new THREE.Mesh( geometry, material );
+    scene.add(cylinder);
+    cylinders[5] = cylinder;
+
+    let lastVector = rotateVector({x: 0, y: q / 2, z: 0}, "Y", alfa1);
+    lastVector = rotateVector(lastVector, "Z", -alfa2);
+    const p2rim = SumPoints(p1, lastVector);
+    const angle2 = {x: 0, y: alfa1 - Math.PI/2, z: -alfa2};
+    setCylinderInPoint(cylinders[5], p2rim, angle2);
+
+    const p2 = SumPoints(p1, rotateVector({x: 0, y: q, z: 0}, "Z", -alfa2));
+    setCylinderInPoint(smallCylinders[6], p2, angle1);
+
+    lastVector = rotateVector({x: 0, y: getL2()/2, z: 0}, "Y", alfa1);
+    lastVector = rotateVector(lastVector, "Z", -alfa2)
+    lastVector = rotateVector(lastVector, "Z",   alfa3);
+    const p3Prim = SumPoints(p2, lastVector);
+    const angle3 = {x: 0, y: alfa1 - Math.PI/2, z: - alfa2 +alfa3};
+    setCylinderInPoint(cylinders[6], p3Prim, angle3);
+
+    lastVector = rotateVector({x: 0, y: getL2(), z: 0}, "Z", -alfa2)
+    lastVector = rotateVector(lastVector, "Z",  alfa3);
+    const p3 = SumPoints(p2, lastVector);
+    setCylinderInPoint(smallCylinders[7], p3, SumPoints(angle3, {x: 0, y: 0, z: Math.PI/2}));
+
+    lastVector = rotateVector({x: 0, y: getL3(), z: 0}, "Z", -alfa2);
+    lastVector = rotateVector(lastVector, "Z", alfa3);
+    lastVector = rotateVector(lastVector, "X", Math.PI/2 + alfa4);
+   // lastVector = rotateVector(lastVector, "Y", -alfa4);
+    const p4Prim = SumPoints(p3, Multiply(lastVector, 1/2));
+    const angle4 = SumPoints(angle3, {x: Math.PI/2 + alfa4, y: 0, z: 0});
+    setCylinderInPoint(cylinders[7], p4Prim, angle4);
+}
+function setCylinderInPoint(cylinder, point, angle) {
+    cylinder.position.x = point.x;
+    cylinder.position.y = point.y;
+    cylinder.position.z = point.z;
+
+    cylinder.rotation.x = angle.x;
+    cylinder.rotation.y = angle.y;
+    cylinder.rotation.z = angle.z;
+}
+export function getLastPoint(parameters, l) {
 
     let _matrix = mat4.create();
     _matrix = mat4.rotateX(mat4.create(), _matrix, parameters.rx);
@@ -172,11 +229,14 @@ function getLastPoint(cylinder, parameters, l) {
 
     versorMatrix = mat4.multiply(versorMatrix, _matrix, versorMatrix);
     return{
-        x: parameters.px - (l / 2) * versorMatrix[0],
-        y: parameters.py - (l / 2) * versorMatrix[1],
-        z: parameters.pz - (l / 2) * versorMatrix[2]
+        x: parameters.px - (l) * versorMatrix[0],
+        y: parameters.py - (l) * versorMatrix[1],
+        z: parameters.pz - (l) * versorMatrix[2]
     };
 }
-function DiffPoints(p1, p2) {
-    return { x: p1.x - p2.x, y: p1.y - p2.y, z: p1.z - p2.z};
+export function getSmallCylinders() {
+    return smallCylinders;
+}
+export function getCylinders() {
+    return cylinders;
 }

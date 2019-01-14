@@ -1,7 +1,6 @@
 import mat4 from 'gl-matrix-mat4';
 
-import { TryParseInt } from '../../datas/CollectAndShareDatas';
-import { TryParseFloat } from '../../Helpers/Parse';
+import { TryParseFloat, TryParseInt } from '../../Helpers/Parse';
 import { quaterion } from '../../Helpers/Quaternion/quaternion';
 import Translate, { setPosition } from '../Translation/Translation';
 import { EulerLerp } from './Euler';
@@ -35,7 +34,10 @@ let angleStep;
 let animationId;
 
 export function getStartAngles() {
-    return { alfa: alfa1, beta: beta1, gamma: gamma1};
+    return { alfa: alfa1, beta: beta1, gamma: gamma1 + Math.PI/2};
+}
+export function getEndAngles() {
+    return { alfa: alfa2, beta: beta2, gamma: gamma2 + Math.PI/2};
 }
 export function setAlfa1(_alfa) {
     let _alfa1 = TryParseFloat(_alfa, alfa1);

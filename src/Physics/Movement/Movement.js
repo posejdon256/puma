@@ -1,5 +1,4 @@
 import math from 'mathjs';
-import { _getGravitation, _getSize } from '../../datas/CollectAndShareDatas';
 import { rotateByQuternionQ } from '../Tensor/Rotation';
 import { getQuaternion } from '../RungyKutta/RungyKutta';
 import { getMass } from '../Tensor/Tensor';

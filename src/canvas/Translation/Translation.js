@@ -1,4 +1,4 @@
-import { getCameras, getTHREE } from '../Animation/AnimationFrame';
+import { getCameras } from '../Animation/AnimationFrame';
 
 let radX = 0, radY = 0;
 let transVec = [0, 0, 0];
@@ -16,12 +16,7 @@ export function setPosition(vec) {
     transVec = [vec[0], vec[1], vec[2]];
 }
 export default function Translate(translationObject) {
-    const THREE = getTHREE();
     const cameras = getCameras();
-    const tempPosition = [
-        {x: cameras[0].position.x, y: cameras[0].position.y, z: cameras[0].position.z},
-        {x: cameras[1].position.x, y: cameras[1].position.y, z: cameras[1].position.z}
-    ];
     const {front, left, top, axisX, axisY, alphaX, alphaY} = translationObject;
     //rotation
     if(axisX) {

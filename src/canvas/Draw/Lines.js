@@ -1,4 +1,3 @@
-import { _getN, _getTrayectory } from '../../datas/CollectAndShareDatas';
 
 let points = [];
 export function getLinesVerticesTrayectory() {

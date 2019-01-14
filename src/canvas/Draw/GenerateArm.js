@@ -1,5 +1,6 @@
 import { getTHREE, setCamera, setRenderer, setScene } from '../Animation/AnimationFrame';
 import { addCylinder, addSmallCylinder, clearCylinderParameters } from '../Geometry/Cylinder';
+import { generateEffector } from './GenerateEffector';
 
 export function generateArm(container, i) {
 
@@ -9,7 +10,7 @@ export function generateArm(container, i) {
     const HEIGHT = 913;
     const renderer = new THREE.WebGLRenderer();
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera( 75, WIDTH / HEIGHT, 0.1, 1000 );
+    let camera = new THREE.PerspectiveCamera( 75, WIDTH / HEIGHT, 0.01, 1000 );
 
     renderer.setSize(WIDTH, HEIGHT);
     container.appendChild(renderer.domElement);
@@ -25,12 +26,14 @@ export function generateArm(container, i) {
     
     addSmallCylinder(i);
     addCylinder(i, {x: 0, y: 13, z: 0});
-    addSmallCylinder(i, {x: 0, y: 13, z: 0}, {x: 3.14 / 2, y: 0, z: 0});
-    addCylinder(i, {x: 13, y: 0, z: 0}, {x: 3.14 / 2, y: 0, z: 3.14 / 2});
-    addSmallCylinder(i, {x: 13, y: 0, z: 0}, {x: 3.14 / 2, y: 0, z: 3.14 / 2});
-    addCylinder(i, {x: 0, y: -13, z: 0}, {x: 3.14 / 2, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: 13, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
+    addCylinder(i, {x: 13, y: 0, z: 0}, {x: -Math.PI / 2, y: 0, z: Math.PI / 2});
+    addSmallCylinder(i, {x: 13, y: 0, z: 0}, {x: Math.PI / 2, y: 0, z: -Math.PI / 2});
+    addCylinder(i, {x: 0, y: -13, z: 0}, {x: -Math.PI / 2, y: 0, z: 0});
     addSmallCylinder(i, {x: 0, y: -13, z: 0});
-    addCylinder(i, {x: 13, y: 0, z: 0}, {x: 0, y: 0, z: 3.14/2});
+    addCylinder(i, {x: 13, y: 0, z: 0}, {x: 0, y: 0, z: Math.PI/2});
+
+    generateEffector(i);
 
     
     var spotLight = new THREE.SpotLight(0xffffff);

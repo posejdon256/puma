@@ -1,4 +1,6 @@
 import { MoveToFront, MoveToLeft, MoveToRight, StopMovingLeft, StopMovingRight, MoveToTop, MoveToBack, StopMovingTop, StopMovingDown, MoveToDown, StopMovingFront, StopMovingBack } from "../Move/Move";
+import { getMode } from "../../datas/CollectAndShareDatas";
+import { updateEffectorStart, updateEffectorEnd } from "../Draw/GenerateEffector";
 export default function KeyboardCenter(event) {
     if(event.type === 'keydown') {
         KeyDown(event);
@@ -6,7 +8,22 @@ export default function KeyboardCenter(event) {
         KeyUp(event);
     }
 }
-function KeyDown(event) {
+function KeyDown(event) {  
+    if(getMode() === 0) {
+        cameraStart(event);
+    } else if(getMode() === 1) {
+        updateEffectorStart(event.keyCode, event);
+    } else if(getMode() === 2){
+        updateEffectorEnd(event.keyCode, event);
+    }
+    event.preventDefault();
+}
+function KeyUp(event) {
+    if(getMode() === 0) {
+        cameraEnd(event);
+    } 
+}
+function cameraStart(event) {
     switch(event.keyCode) {
         case 87: //W
             MoveToTop();
@@ -30,7 +47,7 @@ function KeyDown(event) {
             break;
     }
 }
-function KeyUp(event) {
+function cameraEnd(event) {
     switch(event.keyCode) {
         case 87: //W
             StopMovingTop();

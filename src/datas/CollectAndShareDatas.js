@@ -8,7 +8,8 @@ let l1 = 30,
     z1 = 0,
     x2 = 60,
     y2 = 0,
-    z2 = 0;
+    z2 = 0,
+    mode = 0; // 0 - camera, 1 - start, 2 - end
 export function getPositionEnd() {
     return{
         x: x2,
@@ -22,6 +23,12 @@ export function getPositionStart() {
         y: y1,
         z: z1
     };
+}
+export function setMode(value) {
+    mode = value;
+}
+export function getMode() {
+    return mode;
 }
 export function getZ2() {
     return z2;

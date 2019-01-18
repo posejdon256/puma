@@ -1,6 +1,6 @@
 import './Navbar.scss';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Select, MenuItem } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -16,7 +16,7 @@ import {
     setGamma2,
     setSpeed,
 } from '../canvas/Animation/Animation';
-import { setL1, setL2, setL3, setZ1, setY1, setY2, setX1, setX2, setZ2 } from '../datas/CollectAndShareDatas';
+import { setL1, setL2, setL3, setZ1, setY1, setY2, setX1, setX2, setZ2, setMode } from '../datas/CollectAndShareDatas';
 import { _startAnimation } from '../canvas/Animation/AnimationFrame';
 
 export default class Navbar extends Component {
@@ -39,7 +39,8 @@ export default class Navbar extends Component {
             z2: 0,
             l1: 30,
             l2: 30,
-            l3: 30
+            l3: 30,
+            mode: 0
         };
         this.startAnimation = this.startAnimation.bind(this);
         this.endAnimation = this.endAnimation.bind(this);
@@ -64,6 +65,13 @@ export default class Navbar extends Component {
         this._setX2 = this._setX2.bind(this);
         this._setY2 = this._setY2.bind(this);
         this._setZ2 = this._setZ2.bind(this);
+        this._setMode = this._setMode.bind(this);
+    }
+    _setMode(e) {
+        this.setState({
+            mode: e.target.value
+        });
+        setMode(e.target.value);
     }
     _setZ2(e) {
         this.setState({
@@ -221,6 +229,15 @@ export default class Navbar extends Component {
                             margin="normal"
                             variant="outlined"
                         />
+                          <Select
+                            value={this.state.mode}
+                            onChange={this._setMode}
+                            name="age"
+                            >
+                        <MenuItem value={0}>Camera</MenuItem>
+                        <MenuItem value={1}>Start effector</MenuItem>
+                        <MenuItem value={2}>End effector</MenuItem>
+                    </Select>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField

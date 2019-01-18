@@ -1,6 +1,7 @@
 import { getTHREE, setCamera, setRenderer, setScene } from '../Animation/AnimationFrame';
 import { addCylinder, addSmallCylinder, clearCylinderParameters } from '../Geometry/Cylinder';
 import { generateEffector } from './GenerateEffector';
+import { InitializePuma } from '../Geometry/DrawPuma';
 
 export function generateArm(container, i) {
 
@@ -24,14 +25,16 @@ export function generateArm(container, i) {
     setScene(scene);
     setCamera(camera);
     
-    addSmallCylinder(i);
-    addCylinder(i, {x: 0, y: 13, z: 0});
-    addSmallCylinder(i, {x: 0, y: 13, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
-    addCylinder(i, {x: 13, y: 0, z: 0}, {x: -Math.PI / 2, y: 0, z: Math.PI / 2});
-    addSmallCylinder(i, {x: 13, y: 0, z: 0}, {x: Math.PI / 2, y: 0, z: -Math.PI / 2});
-    addCylinder(i, {x: 0, y: -13, z: 0}, {x: -Math.PI / 2, y: 0, z: 0});
-    addSmallCylinder(i, {x: 0, y: -13, z: 0});
-    addCylinder(i, {x: 13, y: 0, z: 0}, {x: 0, y: 0, z: Math.PI/2});
+    addSmallCylinder(i, {x: 0, y: -13, z: 0}, {x: 0, y: 0, z: 0});
+    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: -13, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
+    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: 13, z: 0}, {x:Math.PI / 2, y: 0, z: 0});
+    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: -13, z: 0}, {x: 0, y: Math.PI / 2, z: 0});
+    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
+
+    InitializePuma(i);
 
     generateEffector(i);
 

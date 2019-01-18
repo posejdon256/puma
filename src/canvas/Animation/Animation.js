@@ -2,6 +2,7 @@ import mat4 from 'gl-matrix-mat4';
 
 import { TryParseFloat, TryParseInt } from '../../Helpers/Parse';
 import { quaterion } from '../../Helpers/Quaternion/quaternion';
+import { updateEffectorEnd, updateEffectorStart } from '../Draw/GenerateEffector';
 import Translate, { setPosition } from '../Translation/Translation';
 import { EulerLerp } from './Euler';
 import { Lerp, Slerp } from './QuaternionInterpolation';
@@ -45,6 +46,7 @@ export function setAlfa1(_alfa) {
         _alfa1 = (_alfa1 / 180) * Math.PI;
     }
     alfa1 = _alfa1;
+    updateEffectorStart({alfa: _alfa1});
 }
 export function setBeta1(_beta) {
     let _beta1 = TryParseFloat(_beta, beta1);
@@ -52,6 +54,7 @@ export function setBeta1(_beta) {
         _beta1 = (_beta1 / 180) * Math.PI;
     }
     beta1 = _beta1;
+    updateEffectorStart({beta: _beta1});
 }
 export function setGamma1(_gamma) {
     let _gamma1 = TryParseFloat(_gamma, gamma1);
@@ -59,6 +62,7 @@ export function setGamma1(_gamma) {
         _gamma1 = (_gamma1 / 180) * Math.PI;
     }
     gamma1 = _gamma1;
+    updateEffectorStart({gamma: _gamma1});
 }
 export function setAlfa2(_alfa) {
     let _alfa2 = TryParseFloat(_alfa, alfa2);
@@ -66,6 +70,7 @@ export function setAlfa2(_alfa) {
         _alfa2 = (_alfa2 / 180) * Math.PI;
     }
     alfa2 = _alfa2;
+    updateEffectorEnd({alfa: _alfa2});
 }
 export function setBeta2(_beta) {
     let _beta2 = TryParseFloat(_beta, beta2);
@@ -73,6 +78,7 @@ export function setBeta2(_beta) {
         _beta2 = (_beta2 / 180) * Math.PI;
     }
     beta2 = _beta2;
+    updateEffectorEnd({beta: _beta2});
 }
 export function setGamma2(_gamma) {
     let _gamma2 = TryParseFloat(_gamma, gamma1);
@@ -80,6 +86,7 @@ export function setGamma2(_gamma) {
         _gamma2 = (_gamma2 / 180) * Math.PI;
     }
     gamma2 = _gamma2;
+    updateEffectorEnd({gamma: _gamma2});
 }
 export function setSpeed(_speed) {
     speed = TryParseInt(_speed, speed);

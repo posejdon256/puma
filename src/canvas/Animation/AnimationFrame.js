@@ -1,4 +1,4 @@
-import { getL2, getL3, getPositionEnd, getPositionStart } from '../../datas/CollectAndShareDatas';
+import { getL2, getL3, getPositionEnd, getPositionStart, getL1 } from '../../datas/CollectAndShareDatas';
 import {
     crossMultiply,
     DiffPoints,
@@ -11,11 +11,11 @@ import {
 import {
     getLastPoint,
     getSmallCylinders,
-    updateEffectorAnglesCanvas1,
-    updateEffectorAnglesCanvas2,
-    addSphere,
 } from '../Geometry/Cylinder';
+import { updateEffectorAnglesCanvas1, updateEffectorAnglesCanvas2} from '../Geometry/CountInverseKinematics'
 import { getEndAngles, getStartAngles } from './Animation';
+import { getStart, getEnd } from '../Draw/GenerateEffector';
+import { DrawPuma } from '../Geometry/DrawPuma';
 
 let cameras = [],
     renderers = [],
@@ -23,7 +23,7 @@ let cameras = [],
     THREE, 
     animationStarted = false,
     asnimationMoment = 0,
-    anglesStart = [],
+    anglesStart = [0, 0, 0, 0],
     angleEnd = [],
     qStart,
     qEnd;
@@ -52,17 +52,18 @@ export function getScene(i) {
     return scenes[i];
 }
 export function _startAnimation() {
-    prepareAnglesConfiguration();
+  //  prepareAnglesConfiguration();
     animationStarted = true;
+    asnimationMoment = 0;
+    anglesStart = [0, 0, 0, 0];
 }
 function prepareAnglesConfiguration() {
 
     const smallCylinders = getSmallCylinders();
-    const start = getPositionStart();
-    const end = getPositionEnd();
+    const start = getStart();
+    const end = getEnd();
 
-    const _anglesStart = getStartAngles();
-    const v1 = DiffPoints(getLastPoint({rx: _anglesStart.alfa, ry: _anglesStart.beta, rz: _anglesStart.gamma, px: start.x, py: start.y, pz: start.z}, getL3()), start);
+    const v1 = DiffPoints(getLastPoint({rx: start.alfa, ry: start.beta, rz: start.gamma, px: start.x, py: start.y, pz: start.z}, getL3()), start);
     const p1 = smallCylinders[1].position;
     const p3 = SumPoints(start, Multiply(v1, -1));
     const p4 = start;
@@ -71,8 +72,7 @@ function prepareAnglesConfiguration() {
     const p2 = SumPoints(p3, Multiply(normalize(_v), -getL2()));
     qStart = getVectorLength(DiffPoints(p2, p1));
 
-    const _anglesEnd = getEndAngles();
-    const v1End = DiffPoints(getLastPoint({rx: _anglesEnd.alfa, ry: _anglesEnd.beta, rz: _anglesEnd.gamma, px: end.x, py: end.y, pz: end.z}, getL3()), end);
+    const v1End = DiffPoints(getLastPoint({rx: end.alfa, ry: end.beta, rz: end.gamma, px: end.x, py: end.y, pz: end.z}, getL3()), end);
     const p1End = smallCylinders[1].position;
     const p3End = SumPoints(end, Multiply(v1End, -1));
     const _normalEnd = normalize(crossMultiply(smallCylinders[1].position, p3End));
@@ -121,8 +121,21 @@ function anglesLen(a1, a2) {
 export function _animate() {
     if(animationStarted) {
         animationStep();
-        asnimationMoment += 0.01;
+        DrawPuma(0, anglesStart[0], anglesStart[1], anglesStart[2], anglesStart[3], getL1());
+        if(anglesStart[0] <  Math.PI) {
+            anglesStart[0] += 0.01
+        } else if(anglesStart[1] <  Math.PI ) {
+            anglesStart[1] += 0.01
+        } else if(anglesStart[2] < Math.PI ) {
+            anglesStart[2] += 0.01
+        } else if(anglesStart[3] < Math.PI) {
+            anglesStart[3] += 0.01
+        } else {
+            asnimationMoment = 2;
+        }
+       // asnimationMoment += 0.01;
     }
+   // DrawPuma(0);
     requestAnimationFrame( _animate );
     renderers[0].render( scenes[0], cameras[0] );
     renderers[1].render( scenes[1], cameras[1] );
@@ -135,11 +148,8 @@ function animationStep() {
         anglesStart = [];
         return;
     }
-    const startPos = getPositionStart();
-    const endPos = getPositionEnd();
-
-    const start = getStartAngles();
-    const end = getEndAngles();
+    const start = getStart(0);
+    const end = getEnd(0);
 
     // if(anglesLen(start.alfa, end.alfa) > anglesLen(start.alfa, end.alfa + 2 * Math.PI)) end.alfa = end.alfa + 2 * Math.PI;
     // if(anglesLen(start.beta, end.beta) > anglesLen(start.beta, end.beta + 2 * Math.PI)) end.beta = end.beta + 2 * Math.PI;
@@ -148,8 +158,8 @@ function animationStep() {
     const alfa = (1 - asnimationMoment)*start.alfa + end.alfa * asnimationMoment;
     const beta = (1 - asnimationMoment)*start.beta + end.beta * asnimationMoment;
     const gamma = (1 - asnimationMoment)*start.gamma + end.gamma * asnimationMoment;
-    const p = SumPoints(Multiply(startPos, (1 - asnimationMoment)), Multiply(endPos,  asnimationMoment));
-    updateEffectorAnglesCanvas1(alfa, beta, gamma, p);
+    const p = SumPoints(Multiply(start, (1 - asnimationMoment)), Multiply(end,  asnimationMoment));
+    updateEffectorAnglesCanvas1(alfa, beta, gamma, p, true);
 
     const alfa1 = (1 - asnimationMoment) * anglesStart[0] + angleEnd[0] * asnimationMoment;
     const alfa2 = (1 - asnimationMoment) * anglesStart[1] + angleEnd[1] * asnimationMoment;

@@ -44,7 +44,7 @@ export function InitializePuma(i) {
     parts[i].push(part3);
     parts[i].push(part4);
 }
-export function DrawPuma(i, a1, a2, a3, a4, q) {
+export function DrawPuma(i, a1, a2, a3, a4, a5, q) {
     const l1 = getL1();
     const l2 = getL2();
     const l3 = getL3();
@@ -56,7 +56,7 @@ export function DrawPuma(i, a1, a2, a3, a4, q) {
     //alfa2
     parts[i][2].rotation.z = a2;
     parts[i][2].position.x = -Math.sin(a2) * q / 2;
-    parts[i][2].position.y = l1/2 + Math.cos(a2) * q / 2;
+    parts[i][2].position.y = q /2 + Math.cos(a2) * q / 2;
 
     //alfa3
     parts[i][1].rotation.z = a3;

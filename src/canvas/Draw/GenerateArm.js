@@ -25,13 +25,13 @@ export function generateArm(container, i) {
     setScene(scene);
     setCamera(camera);
     
-    addSmallCylinder(i, {x: 0, y: -13, z: 0}, {x: 0, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: -15, z: 0}, {x: 0, y: 0, z: 0});
     addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
-    addSmallCylinder(i, {x: 0, y: -13, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: -15, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
     addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
-    addSmallCylinder(i, {x: 0, y: 13, z: 0}, {x:Math.PI / 2, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: 15, z: 0}, {x:Math.PI / 2, y: 0, z: 0});
     addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
-    addSmallCylinder(i, {x: 0, y: -13, z: 0}, {x: 0, y: Math.PI / 2, z: 0});
+    addSmallCylinder(i, {x: 0, y: -15, z: 0}, {x: 0, y: Math.PI / 2, z: 0});
     addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
 
     InitializePuma(i);

@@ -23,7 +23,7 @@ let cameras = [],
     THREE, 
     animationStarted = false,
     asnimationMoment = 0,
-    anglesStart = [0, 0, 0, 0],
+    anglesStart = [0, 0, 0, 0, 0],
     angleEnd = [],
     qStart,
     qEnd;
@@ -121,21 +121,8 @@ function anglesLen(a1, a2) {
 export function _animate() {
     if(animationStarted) {
         animationStep();
-        DrawPuma(0, anglesStart[0], anglesStart[1], anglesStart[2], anglesStart[3], getL1());
-        if(anglesStart[0] <  Math.PI) {
-            anglesStart[0] += 0.01
-        } else if(anglesStart[1] <  Math.PI ) {
-            anglesStart[1] += 0.01
-        } else if(anglesStart[2] < Math.PI ) {
-            anglesStart[2] += 0.01
-        } else if(anglesStart[3] < Math.PI) {
-            anglesStart[3] += 0.01
-        } else {
-            asnimationMoment = 2;
-        }
-       // asnimationMoment += 0.01;
+        asnimationMoment += 0.01;
     }
-   // DrawPuma(0);
     requestAnimationFrame( _animate );
     renderers[0].render( scenes[0], cameras[0] );
     renderers[1].render( scenes[1], cameras[1] );

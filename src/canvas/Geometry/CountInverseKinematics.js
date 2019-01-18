@@ -65,11 +65,14 @@ export function updateEffectorAnglesCanvas1(alfa, beta, gamma, start, _animation
     const p2 = SumPoints(point, Multiply(normalize(_v), -getL2()));
     const p3 = point;
     const p4 = start;
-    const q = DiffPoints(p2, p1);
+    //const q = getVectorLength(DiffPoints(p2, p1));
 
-   // const a1 = 
-
-  //  DrawPuma(0, )
+    const a1 = Math.atan2(p3.y, p3.x);
+    const a2 = Math.acos(scalarMultiply(normalize(p1), normalize(DiffPoints(p2, p1)))) - Math.PI / 2;
+    const a3 = Math.acos(scalarMultiply(normalize(DiffPoints(p2, p1)), normalize(DiffPoints(p3, p2)))) - Math.PI / 2;
+    const n = normalize(crossMultiply(p4, p2));
+    const a4 = Math.acos(scalarMultiply(n, normalize(Multiply(v1, -1)))) + Math.PI / 2;
+    DrawPuma(0, a1, a2, a3, a4, 0, getL1());
     if(_animation) {
         setCylinderPositionAndAngle(angle, start, 0);
     }

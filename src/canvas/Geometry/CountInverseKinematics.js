@@ -1,9 +1,9 @@
-import { DiffPoints, SumPoints, Multiply, normalize, scalarMultiply, getVectorLength, crossMultiply } from "../../Helpers/Vectors";
-import { getTHREE, getScene } from "../Animation/AnimationFrame";
-import { getL2, getL1, getL3 } from "../../datas/CollectAndShareDatas";
-import { getSmallCylinders, getCylinders, getLastPoint } from "./Cylinder";
-import { getStart, setCylinderPositionAndAngle } from "../Draw/GenerateEffector";
-import { DrawPuma } from "./DrawPuma";
+import { getL1, getL2, getL3 } from '../../datas/CollectAndShareDatas';
+import { crossMultiply, DiffPoints, Multiply, normalize, scalarMultiply, SumPoints, getVectorLength } from '../../Helpers/Vectors';
+import { getScene, getTHREE } from '../Animation/AnimationFrame';
+import { setCylinderPositionAndAngle } from '../Draw/GenerateEffector';
+import { getCylinders, getLastPoint, getSmallCylinders, addSphere } from './Cylinder';
+import { DrawPuma } from './DrawPuma';
 
 export function updateEffectorAnglesCanvas2(alfa1, alfa2, alfa3, alfa4, alfa5, q) {
 
@@ -59,20 +59,24 @@ export function updateEffectorAnglesCanvas1(alfa, beta, gamma, start, _animation
      let angle = {alfa: alfa, beta: beta, gamma: gamma};
      let point = SumPoints(start, v1);
 
-    const p1 = {x: 0, y: 26, z: 0};
+    const p0 = {x: 0, y:0, z: 0};
+    const p1 = {x: 0, y: 15, z: 0};
     const _normal = normalize(crossMultiply(p1, point));
     const _v = Multiply(normalize(crossMultiply(DiffPoints(start, point), _normal)), -1);
     const p2 = SumPoints(point, Multiply(normalize(_v), -getL2()));
     const p3 = point;
     const p4 = start;
-    //const q = getVectorLength(DiffPoints(p2, p1));
+    if(!_animation) {
+        addSphere(0, p3);
+    }
+    const q = getVectorLength(DiffPoints(p2, p1));
 
-    const a1 = Math.atan2(p3.y, p3.x);
-    const a2 = Math.acos(scalarMultiply(normalize(p1), normalize(DiffPoints(p2, p1)))) - Math.PI / 2;
-    const a3 = Math.acos(scalarMultiply(normalize(DiffPoints(p2, p1)), normalize(DiffPoints(p3, p2)))) - Math.PI / 2;
-    const n = normalize(crossMultiply(p4, p2));
+    const a1 = Math.atan2(p3.z, p3.x) + Math.PI;
+    const a2 = Math.acos(scalarMultiply(normalize(DiffPoints(p1, p0)), normalize(DiffPoints(p2, p1))));
+    const a3 = Math.atan2(p3.y, p3.x);//Math.acos(scalarMultiply(normalize(DiffPoints(p2, p1)), normalize(DiffPoints(p3, p2))));
+    const n = normalize(crossMultiply(p3, p1));
     const a4 = Math.acos(scalarMultiply(n, normalize(Multiply(v1, -1)))) + Math.PI / 2;
-    DrawPuma(0, a1, a2, a3, a4, 0, getL1());
+    DrawPuma(0, a1, a2, a3, a4, 0, q);
     if(_animation) {
         setCylinderPositionAndAngle(angle, start, 0);
     }

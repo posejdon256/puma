@@ -25,14 +25,11 @@ export function addSphere(i, pos) {
 export function getLastRotation() {
     return lastRotation;
 }
-export function addCylinder(i, position, rotation) {
+export function addCylinder(i, position, rotation, len) {
     const THREE = getTHREE();
-    const geometry = new THREE.CylinderGeometry( 2, 2, 30, 32 );
+    const geometry = new THREE.CylinderGeometry( 2, 2, len ? len : 30, 32 );
     const material = new THREE.MeshPhongMaterial({color: 0x0000ff} );
     const cylinder = new THREE.Mesh( geometry, material );
-
-    //addPosition(position);
-    //addRotation(rotation);
 
     cylinder.position.x = position.x;
     cylinder.position.y = position.y;
@@ -42,6 +39,7 @@ export function addCylinder(i, position, rotation) {
     cylinder.rotation.y = rotation.y;
     cylinder.rotation.z = rotation.z;
     cylinders.push(cylinder);
+    return cylinder;
 }
 export function addSmallCylinder(i, position, rotation) {
     const THREE = getTHREE();
@@ -62,6 +60,7 @@ export function addSmallCylinder(i, position, rotation) {
     cylinder.rotation.z = rotation.z;
 
     smallCylinders.push(cylinder);
+    return cylinder;
 }
 export function getAllCylinders() {
     return cylinders;

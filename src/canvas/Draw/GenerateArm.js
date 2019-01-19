@@ -1,7 +1,7 @@
 import { getTHREE, setCamera, setRenderer, setScene } from '../Animation/AnimationFrame';
-import { addCylinder, addSmallCylinder, clearCylinderParameters } from '../Geometry/Cylinder';
-import { generateEffector } from './GenerateEffector';
+import { addCylinder, addSmallCylinder, clearCylinderParameters, clearCylinders } from '../Geometry/Cylinder';
 import { InitializePuma } from '../Geometry/DrawPuma';
+import { generateEffector } from './GenerateEffector';
 
 export function generateArm(container, i) {
 
@@ -11,7 +11,7 @@ export function generateArm(container, i) {
     const HEIGHT = 913;
     const renderer = new THREE.WebGLRenderer();
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera( 90, WIDTH / HEIGHT, 1, 1000 );
+    let camera = new THREE.PerspectiveCamera( 45, WIDTH / HEIGHT, 1, 1000 );
 
     renderer.setSize(WIDTH, HEIGHT);
     container.appendChild(renderer.domElement);
@@ -25,22 +25,22 @@ export function generateArm(container, i) {
     setScene(scene);
     setCamera(camera);
     
-    addSmallCylinder(i, {x: 0, y: -15, z: 0}, {x: 0, y: 0, z: 0});
-    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
-    addSmallCylinder(i, {x: 0, y: 15, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
+    addSmallCylinder(i, {x: 0, y: -30, z: 0}, {x: 0, y: 0, z: 0});
+    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0}, 60);
+    addSmallCylinder(i, {x: 0, y: 30, z: 0}, {x: Math.PI / 2, y: 0, z: 0});
+    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0}, false, true);
     addSmallCylinder(i, {x: 0, y: 15, z: 0}, {x:Math.PI / 2, y: 0, z: 0});
     addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
     addSmallCylinder(i, {x: 0, y: -15, z: 0}, {x: 0, y: Math.PI / 2, z: 0});
     addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
-    addCylinder(i, {x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 0});
-
-    InitializePuma(i);
 
     generateEffector(i);
+    InitializePuma(i);
 
+    clearCylinders();
     
     var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-0, 10, 60);
+    spotLight.position.set(-0, 10, 100);
     spotLight.castShadow = true;
     spotLight.intensity = 1;
     scene.add(spotLight);

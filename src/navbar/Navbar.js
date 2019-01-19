@@ -16,7 +16,8 @@ import {
     setGamma2,
     setSpeed,
 } from '../canvas/Animation/Animation';
-import { setL1, setL2, setL3, setZ1, setY1, setY2, setX1, setX2, setZ2, setMode } from '../datas/CollectAndShareDatas';
+import {setL1, setL2, setL3, setMode} from '../datas/CollectAndShareDatas';
+import { setZ1, setY1, setY2, setX1, setX2, setZ2 } from '../canvas/Draw/GenerateEffector';
 import { _startAnimation } from '../canvas/Animation/AnimationFrame';
 
 export default class Navbar extends Component {
@@ -26,9 +27,9 @@ export default class Navbar extends Component {
             alfa1: 0,
             beta1: 0,
             gamma1: 0,
-            alfa2: 17,
-            beta2: 28,
-            gamma2: 40,
+            alfa2: 0,
+            beta2: 0,
+            gamma2: 0,
             speed: 100,
             slerp: true,
             x1: 60,
@@ -37,7 +38,7 @@ export default class Navbar extends Component {
             x2: 60,
             y2: 0,
             z2: 0,
-            l1: 30,
+            l1: 60,
             l2: 30,
             l3: 30,
             mode: 0

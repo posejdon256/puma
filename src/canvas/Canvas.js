@@ -9,6 +9,7 @@ import { setTHREE, _animate } from './Animation/AnimationFrame';
 import { generateArm } from './Draw/GenerateArm';
 import KeyboardCenter from './KeybordCenter/KeyboardCenter';
 import MouseCenter from './MouseCenter/MouseCenter';
+import { updateEffectorStart, updateEffectorEnd } from './Draw/GenerateEffector';
 
 export default class Canvas extends Component {
     constructor(props) {
@@ -23,6 +24,8 @@ export default class Canvas extends Component {
        setTHREE(THREE);
         generateArm(this.refs.can1, 0);
         generateArm(this.refs.can2, 1);
+        updateEffectorStart({});
+        updateEffectorEnd({});
         _animate();
 
        // DrawArms();

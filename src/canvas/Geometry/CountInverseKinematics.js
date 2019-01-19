@@ -1,107 +1,65 @@
-import { getL1, getL2, getL3 } from '../../datas/CollectAndShareDatas';
-import { crossMultiply, DiffPoints, Multiply, normalize, scalarMultiply, SumPoints, getVectorLength } from '../../Helpers/Vectors';
-import { getScene, getTHREE } from '../Animation/AnimationFrame';
-import { setCylinderPositionAndAngle } from '../Draw/GenerateEffector';
-import { getCylinders, getLastPoint, getSmallCylinders, addSphere } from './Cylinder';
-import { DrawPuma } from './DrawPuma';
+import { getL2, getL3, getL1 } from '../../datas/CollectAndShareDatas';
+import {
+    crossMultiply,
+    DiffPoints,
+    getVectorLength,
+    Multiply,
+    normalize,
+    scalarMultiply,
+    SumPoints,
+} from '../../Helpers/Vectors';
+import { getLastPoint, getX, getZ } from './Cylinder';
 
-export function updateEffectorAnglesCanvas2(alfa1, alfa2, alfa3, alfa4, alfa5, q) {
 
-    const smallCylinders = getSmallCylinders();
-    const cylinders = getCylinders();
-    const scene = getScene(1);
-    const p0 = {x: 0, y: 0, z: 0};
-    const p1 = SumPoints(p0, {x: 0, y: getL1() - 4, z: 0});
-    const angle1 = {x: 0, y: alfa1, z: Math.PI/2};
-    setCylinderInPoint(smallCylinders[5], p1, angle1);
 
-    scene.remove(cylinders[5]);
-    const THREE = getTHREE();
-    const geometry = new THREE.CylinderGeometry( 2, 2, q, 32 );
-    const material = new THREE.MeshPhongMaterial({color: 0x0000ff} );
-    const cylinder = new THREE.Mesh( geometry, material );
-    scene.add(cylinder);
-    cylinders[5] = cylinder;
-
-    let lastVector = rotateVector({x: 0, y: q / 2, z: 0}, "Y", alfa1);
-    lastVector = rotateVector(lastVector, "Z", -alfa2);
-    const p2rim = SumPoints(p1, lastVector);
-    const angle2 = {x: 0, y: alfa1 - Math.PI/2, z: -alfa2};
-    setCylinderInPoint(cylinders[5], p2rim, angle2);
-
-    const p2 = SumPoints(p1, rotateVector({x: 0, y: q, z: 0}, "Z", -alfa2));
-    setCylinderInPoint(smallCylinders[6], p2, angle1);
-
-    lastVector = rotateVector({x: 0, y: getL2()/2, z: 0}, "Y", alfa1);
-    lastVector = rotateVector(lastVector, "Z", -alfa2)
-    lastVector = rotateVector(lastVector, "Z",   alfa3);
-    const p3Prim = SumPoints(p2, lastVector);
-    const angle3 = {x: 0, y: alfa1 - Math.PI/2, z: - alfa2 +alfa3};
-    setCylinderInPoint(cylinders[6], p3Prim, angle3);
-
-    lastVector = rotateVector({x: 0, y: getL2(), z: 0}, "Z", -alfa2)
-    lastVector = rotateVector(lastVector, "Z",  alfa3);
-    const p3 = SumPoints(p2, lastVector);
-    setCylinderInPoint(smallCylinders[7], p3, SumPoints(angle3, {x: 0, y: 0, z: Math.PI/2}));
-
-    lastVector = rotateVector({x: 0, y: getL3(), z: 0}, "Z", -alfa2);
-    lastVector = rotateVector(lastVector, "Z", alfa3);
-    lastVector = rotateVector(lastVector, "X", Math.PI/2 + alfa4);
-   // lastVector = rotateVector(lastVector, "Y", -alfa4);
-    const p4Prim = SumPoints(p3, Multiply(lastVector, 1/2));
-    const angle4 = SumPoints(angle3, {x: Math.PI/2 + alfa4, y: 0, z: 0});
-    setCylinderInPoint(cylinders[7], p4Prim, angle4);
-}
-export function updateEffectorAnglesCanvas1(alfa, beta, gamma, start, _animation) {
+export function countInverseKinematics(alfa, beta, gamma, start, _animation, prevQ) {
 
      const v1 = DiffPoints(getLastPoint({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}, getL3()), start);
-
-     let angle = {alfa: alfa, beta: beta, gamma: gamma};
      let point = SumPoints(start, v1);
 
     const p0 = {x: 0, y:0, z: 0};
-    const p1 = {x: 0, y: 15, z: 0};
+    const p1 = {x: 0, y: getL1() / 2, z: 0};
     const _normal = normalize(crossMultiply(p1, point));
+    if(isNaN(_normal.x)) {
+        _normal.x = 0;
+        _normal.y = 0;
+        _normal.z = -1;
+    }
     const _v = Multiply(normalize(crossMultiply(DiffPoints(start, point), _normal)), -1);
-    const p2 = SumPoints(point, Multiply(normalize(_v), -getL2()));
+    let p2 = SumPoints(point, Multiply(normalize(_v), getL2()));
     const p3 = point;
-    const p4 = start;
-    if(!_animation) {
-        addSphere(0, p3);
-    }
-    const q = getVectorLength(DiffPoints(p2, p1));
 
-    const a1 = Math.atan2(p3.z, p3.x) + Math.PI;
+    let q = getVectorLength(DiffPoints(p2, p1));
+    let minusAlfa = false;
+    const _p2 = SumPoints(point, Multiply(normalize(_v), -getL2()));
+    if(prevQ && getVectorLength(DiffPoints(p2, prevQ)) > 2) {
+        p2 = _p2;
+        q = getVectorLength(DiffPoints(p2, p1));
+        minusAlfa = true;
+     } else if(prevQ === undefined && q > getVectorLength(DiffPoints(_p2, p1))) {
+        p2 = _p2;
+        q = getVectorLength(DiffPoints(p2, p1));
+        minusAlfa = true;
+     }
+     
+    const n1 = normalize(crossMultiply(DiffPoints(p1, p2), DiffPoints(p3, p2)));
+    const n2 = normalize(crossMultiply(p3, p1));
+
+    const len = getVectorLength(SumPoints(n1, n2));
+
+    const z5 = normalize(getZ({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}));
+    const x5 = normalize(getX({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}));
+
+    const a1 = Math.atan2(-p3.z, p3.x) + Math.PI;
     const a2 = Math.acos(scalarMultiply(normalize(DiffPoints(p1, p0)), normalize(DiffPoints(p2, p1))));
-    const a3 = Math.atan2(p3.y, p3.x);//Math.acos(scalarMultiply(normalize(DiffPoints(p2, p1)), normalize(DiffPoints(p3, p2))));
-    const n = normalize(crossMultiply(p3, p1));
-    const a4 = Math.acos(scalarMultiply(n, normalize(Multiply(v1, -1)))) + Math.PI / 2;
-    DrawPuma(0, a1, a2, a3, a4, 0, q);
-    if(_animation) {
-        setCylinderPositionAndAngle(angle, start, 0);
+    let a3 =  Math.acos(scalarMultiply(normalize(DiffPoints(p1, p2)), normalize(DiffPoints(p3, p2))));
+    let a4 = Math.acos(scalarMultiply(normalize(crossMultiply(p3, p1)), x5));
+    const a5 = Math.acos(scalarMultiply(normalize(crossMultiply(p2, p3)), z5));
+    a4 = minusAlfa ? -a4 : a4;
+    a3 = Math.abs(len) < 0.01 ? a3 : -a3;
+    if(!_animation) {
+       // addSphere(0, SumPoints(p4, Multiply(x5, 10)));
     }
+    return {a1: a1, a2: a2, a3: a3, a4: a4, a5: a5, q: q, p2: p2};
 
-}
-function setCylinderInPoint(cylinder, point, angle) {
-    cylinder.position.x = point.x;
-    cylinder.position.y = point.y;
-    cylinder.position.z = point.z;
-
-    cylinder.rotation.x = angle.x;
-    cylinder.rotation.y = angle.y;
-    cylinder.rotation.z = angle.z;
-}
-function rotateVector(vector, axis, angle) {
-    const THREE = getTHREE();
-    const _vector = new THREE.Vector3( vector.x, vector.y, vector.z );
-    let _axis;
-    if(axis === "X") {
-        _axis = new THREE.Vector3( 1, 0, 0 );
-    } else if(axis === "Y") {
-        _axis = new THREE.Vector3( 0, 1, 0 );
-    } else {
-        _axis = new THREE.Vector3( 0, 0, 1 );
-    }
-    const newVector = _vector.applyAxisAngle( _axis, angle );
-    return {x: newVector.x, y: newVector.y, z: newVector.z};
 }

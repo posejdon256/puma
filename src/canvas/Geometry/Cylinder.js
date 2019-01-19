@@ -3,8 +3,8 @@ import mat4 from 'gl-matrix-mat4';
 import { normalize } from '../../Helpers/Vectors';
 import { getScene, getTHREE } from '../Animation/AnimationFrame';
 
-const cylinders = [];
-const smallCylinders = [];
+let cylinders = [];
+let smallCylinders = [];
 let sphere;
 let lastPosition = {x: 0, y: 0, z: 0};
 let lastRotation = {x: 0, y: 0, z: 0};
@@ -25,6 +25,10 @@ export function addSphere(i, pos) {
 export function getLastRotation() {
     return lastRotation;
 }
+export function clearCylinders() {
+    cylinders = [];
+    smallCylinders = [];
+}
 export function addCylinder(i, position, rotation, len) {
     const THREE = getTHREE();
     const geometry = new THREE.CylinderGeometry( 2, 2, len ? len : 30, 32 );
@@ -39,11 +43,11 @@ export function addCylinder(i, position, rotation, len) {
     cylinder.rotation.y = rotation.y;
     cylinder.rotation.z = rotation.z;
     cylinders.push(cylinder);
+
     return cylinder;
 }
 export function addSmallCylinder(i, position, rotation) {
     const THREE = getTHREE();
-    const scene = getScene(i);
     const geometry = new THREE.CylinderGeometry( 3, 3, 5, 32 );
     const material = new THREE.MeshPhongMaterial({color: 0xffff00} );
     const cylinder = new THREE.Mesh( geometry, material );
@@ -100,6 +104,49 @@ export function getLastPoint(parameters, l) {
         x: parameters.px - (l) * versorMatrix[0],
         y: parameters.py - (l) * versorMatrix[1],
         z: parameters.pz - (l) * versorMatrix[2]
+    };
+}
+
+export function getZ(parameters) {
+
+    let _matrix = mat4.create();
+    _matrix = mat4.rotateX(mat4.create(), _matrix, parameters.rx);
+    _matrix = mat4.rotateY(mat4.create(), _matrix, parameters.ry);
+    _matrix = mat4.rotateZ(mat4.create(), _matrix, parameters.rz);
+
+    let versor = {x: -1, y: 0, z: 0};
+    versor = normalize(versor);
+    let versorMatrix = mat4.create();
+    versorMatrix[0] = versor.x;
+    versorMatrix[1] = versor.y;
+    versorMatrix[2] = versor.z;
+
+    versorMatrix = mat4.multiply(versorMatrix, _matrix, versorMatrix);
+    return{
+        x: versorMatrix[0],
+        y: versorMatrix[1],
+        z: versorMatrix[2]
+    };
+}
+export function getX(parameters) {
+
+    let _matrix = mat4.create();
+    _matrix = mat4.rotateX(mat4.create(), _matrix, parameters.rx);
+    _matrix = mat4.rotateY(mat4.create(), _matrix, parameters.ry);
+    _matrix = mat4.rotateZ(mat4.create(), _matrix, parameters.rz);
+
+    let versor = {x: 0, y: 1, z: 0};
+    versor = normalize(versor);
+    let versorMatrix = mat4.create();
+    versorMatrix[0] = versor.x;
+    versorMatrix[1] = versor.y;
+    versorMatrix[2] = versor.z;
+
+    versorMatrix = mat4.multiply(versorMatrix, _matrix, versorMatrix);
+    return{
+        x: versorMatrix[0],
+        y: versorMatrix[1],
+        z: versorMatrix[2]
     };
 }
 export function getSmallCylinders() {

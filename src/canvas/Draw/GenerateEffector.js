@@ -1,21 +1,24 @@
 import { getScene, getTHREE } from '../Animation/AnimationFrame';
-import { updateEffectorAnglesCanvas1 } from '../Geometry/CountInverseKinematics';
+import { countInverseKinematics } from '../Geometry/CountInverseKinematics';
+import { DrawPuma, pushEffector } from '../Geometry/DrawPuma';
+import { TryParseFloat } from '../../Helpers/Parse';
 
 const effectorArms = [];
+let qPrev;
 const startEffector = [{
     x: 60,
     y: 0,
     z: 0,
     alfa: 0,
     beta: 0,
-    gamma: 0
+    gamma: (- Math.PI / 2)
 }, {
     x: 60,
     y: 0,
     z: 0,
     alfa: 0,
     beta: 0,
-    gamma: 0
+    gamma: (- Math.PI / 2)
 }];
 let objectGroups = [];
 export function getStart(i) {
@@ -30,15 +33,48 @@ const endEffector = [{
     z: 0,
     alfa: 0,
     beta: 0,
-    gamma: 0
+    gamma: (- Math.PI / 2)
 }, {
     x: 60,
     y: 0,
     z: 0,
     alfa: 0,
     beta: 0,
-    gamma: 0
+    gamma: (- Math.PI / 2)
 }];
+export function setZ2(_value) {
+    endEffector[0].z = TryParseFloat(_value, endEffector[0].z);
+    endEffector[1].z = TryParseFloat(_value, endEffector[1].z);
+    setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 1);
+    setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 3);
+}
+export function setY2(_value) {
+    endEffector[0].y = TryParseFloat(_value, endEffector[0].y);
+    endEffector[1].y = TryParseFloat(_value, endEffector[1].y);
+    setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 1);
+    setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 3);
+}
+export function setX2(_value) {
+    endEffector[0].x = TryParseFloat(_value, endEffector[0].x);
+    endEffector[1].x = TryParseFloat(_value, endEffector[1].x);
+    setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 1);
+    setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 3);
+}
+export function setZ1(_value) {
+    startEffector[0].z = TryParseFloat(_value, startEffector[0].z);
+    startEffector[1].z = TryParseFloat(_value, startEffector[1].z);
+    _DrawPuma();
+}
+export function setY1(_value) {
+    startEffector[0].y = TryParseFloat(_value, startEffector[0].y);
+    startEffector[1].y = TryParseFloat(_value, startEffector[1].y);
+    _DrawPuma();
+}
+export function setX1(_value) {
+    startEffector[0].x = TryParseFloat(_value, startEffector[0].x);
+    startEffector[1].x = TryParseFloat(_value, startEffector[1].x);
+    _DrawPuma();
+}
 export function updateEffectorStart(configuration, event) {
     switch(configuration) {
         case 87: //W
@@ -75,13 +111,18 @@ export function updateEffectorStart(configuration, event) {
         startEffector[0].beta = configuration.beta;
         startEffector[1].beta = configuration.beta;
     } else if(configuration.gamma !== undefined) {
-        startEffector[0].gamma = configuration.gamma;
-        startEffector[1].gamma = configuration.gamma;
+        startEffector[0].gamma =(- Math.PI / 2) +  configuration.gamma;
+        startEffector[1].gamma =(- Math.PI / 2) +  configuration.gamma;
     }
-    setCylinderPositionAndAngle(startEffector[0], startEffector[0], 0);
-    setCylinderPositionAndAngle(startEffector[0], startEffector[0], 2);
 
-    updateEffectorAnglesCanvas1(startEffector[0].alfa, startEffector[0].beta, startEffector[0].gamma, startEffector[0], false);
+    _DrawPuma();
+}
+function _DrawPuma() {
+    const conf1 = countInverseKinematics(startEffector[0].alfa, startEffector[0].beta, startEffector[0].gamma, startEffector[0], false, qPrev !== undefined ? qPrev : undefined);
+    const conf2 = countInverseKinematics(startEffector[1].alfa, startEffector[1].beta, startEffector[1].gamma, startEffector[1], false, qPrev !== undefined ? qPrev : undefined);
+    DrawPuma(0, conf1.a1, conf1.a2, conf1.a3, conf1.a4, conf1.a5, conf1.q);
+    DrawPuma(1, conf2.a1, conf2.a2, conf2.a3, conf2.a4, conf2.a5, conf2.q);
+    qPrev = conf1.p2;
 }
 export function updateEffectorEnd(configuration) {
     switch(configuration) {
@@ -120,8 +161,8 @@ export function updateEffectorEnd(configuration) {
         endEffector[0].beta = configuration.beta;
         endEffector[1].beta = configuration.beta;
     } else if(configuration.gamma !== undefined) {
-        endEffector[0].gamma = configuration.gamma;
-        endEffector[1].gamma = configuration.gamma;
+        endEffector[0].gamma =(- Math.PI / 2) +  configuration.gamma;
+        endEffector[1].gamma =(- Math.PI / 2) +  configuration.gamma;
     }
     setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 1);
     setCylinderPositionAndAngle(endEffector[0],  endEffector[0], 3);
@@ -141,7 +182,7 @@ export function generateEffector(i) {
     const THREE = getTHREE();
     objectGroups.push(new THREE.Object3D());
     objectGroups.push(new THREE.Object3D());
-    objectGroups[i * 2].position.set( startEffector[i].x, startEffector[i].y, startEffector[i].z);
+    //objectGroups[i * 2].position.set( startEffector[i].x, startEffector[i].y, startEffector[i].z);
     objectGroups[i * 2 + 1].position.set( startEffector[i].x, startEffector[i].y, startEffector[i].z);
     let position = {
         x: 0,
@@ -154,8 +195,10 @@ export function generateEffector(i) {
     addCylinder(0x00ff00, {x: Math.PI/2, y: 0, z: 0}, position, i, {x: 0, y: 10, z: 0}, i * 2 + 1);
     addCylinder(0xffff00, {x: 0, y: 0, z: Math.PI/2}, position, i, {x: 0, y: 10, z: 0}, i * 2);
     addCylinder(0xffff00, {x: 0, y: 0, z: Math.PI/2}, position, i, {x: 0, y: 10, z: 0}, i * 2 + 1);
-    scene.add(objectGroups[i * 2]);
+    //scene.add(objectGroups[i * 2]);
     scene.add(objectGroups[i * 2 + 1]);
+
+    pushEffector(objectGroups[i * 2]);
 
 }
 function addCylinder(color, rotation, position, i, translate, j) {

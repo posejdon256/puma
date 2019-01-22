@@ -5,6 +5,7 @@ import { TryParseFloat } from '../../Helpers/Parse';
 
 const effectorArms = [];
 let qPrev;
+let crossPrev;
 const startEffector = [{
     x: 60,
     y: 0,
@@ -118,11 +119,12 @@ export function updateEffectorStart(configuration, event) {
     _DrawPuma();
 }
 function _DrawPuma() {
-    const conf1 = countInverseKinematics(startEffector[0].alfa, startEffector[0].beta, startEffector[0].gamma, startEffector[0], false, qPrev !== undefined ? qPrev : undefined);
-    const conf2 = countInverseKinematics(startEffector[1].alfa, startEffector[1].beta, startEffector[1].gamma, startEffector[1], false, qPrev !== undefined ? qPrev : undefined);
+    const conf1 = countInverseKinematics(startEffector[0].alfa, startEffector[0].beta, startEffector[0].gamma, startEffector[0], false, qPrev, crossPrev);
+    const conf2 = countInverseKinematics(startEffector[1].alfa, startEffector[1].beta, startEffector[1].gamma, startEffector[1], false, qPrev, crossPrev);
     DrawPuma(0, conf1.a1, conf1.a2, conf1.a3, conf1.a4, conf1.a5, conf1.q);
     DrawPuma(1, conf2.a1, conf2.a2, conf2.a3, conf2.a4, conf2.a5, conf2.q);
     qPrev = conf1.p2;
+    crossPrev = conf1.crossPrev;
 }
 export function updateEffectorEnd(configuration) {
     switch(configuration) {
@@ -184,24 +186,20 @@ export function generateEffector(i) {
     objectGroups.push(new THREE.Object3D());
     //objectGroups[i * 2].position.set( startEffector[i].x, startEffector[i].y, startEffector[i].z);
     objectGroups[i * 2 + 1].position.set( startEffector[i].x, startEffector[i].y, startEffector[i].z);
-    let position = {
-        x: 0,
-        y: 0,
-        z: 0
-    };
-    addCylinder(0xff0000, {x: 0, y: -Math.PI/2, z: 0}, position, i, {x: 0, y: 10, z: 0}, i * 2);
-    addCylinder(0xff0000, {x: 0, y: -Math.PI/2, z: 0}, position, i, {x: 0, y: 10, z: 0}, i * 2 + 1);
-    addCylinder(0x00ff00, {x: Math.PI/2, y: 0, z: 0}, position, i, {x: 0, y: 10, z: 0}, i * 2);
-    addCylinder(0x00ff00, {x: Math.PI/2, y: 0, z: 0}, position, i, {x: 0, y: 10, z: 0}, i * 2 + 1);
-    addCylinder(0xffff00, {x: 0, y: 0, z: Math.PI/2}, position, i, {x: 0, y: 10, z: 0}, i * 2);
-    addCylinder(0xffff00, {x: 0, y: 0, z: Math.PI/2}, position, i, {x: 0, y: 10, z: 0}, i * 2 + 1);
+
+    addCylinder(0xff0000, {x: 0, y: -Math.PI/2, z: 0}, {x: 0, y: 10, z: 0}, i * 2);
+    addCylinder(0xff0000, {x: 0, y: -Math.PI/2, z: 0}, {x: 0, y: 10, z: 0}, i * 2 + 1);
+    addCylinder(0x00ff00, {x: Math.PI/2, y: 0, z: 0}, {x: 0, y: 10, z: 0}, i * 2);
+    addCylinder(0x00ff00, {x: Math.PI/2, y: 0, z: 0}, {x: 0, y: 10, z: 0}, i * 2 + 1);
+    addCylinder(0xffff00, {x: 0, y: 0, z: Math.PI/2}, {x: 0, y: 10, z: 0}, i * 2);
+    addCylinder(0xffff00, {x: 0, y: 0, z: Math.PI/2}, {x: 0, y: 10, z: 0}, i * 2 + 1);
     //scene.add(objectGroups[i * 2]);
     scene.add(objectGroups[i * 2 + 1]);
 
     pushEffector(objectGroups[i * 2]);
 
 }
-function addCylinder(color, rotation, position, i, translate, j) {
+function addCylinder(color, rotation, translate, j) {
     const THREE = getTHREE();
     const geometry = new THREE.CylinderGeometry( 1, 1, 20, 32 );
     if(translate) {
@@ -209,11 +207,6 @@ function addCylinder(color, rotation, position, i, translate, j) {
     }
     const material = new THREE.MeshPhongMaterial({color: color} );
     const cylinder = new THREE.Mesh( geometry, material );
-
-
-    cylinder.position.x = position.x;
-    cylinder.position.y = position.y;
-    cylinder.position.z = position.z;
 
     cylinder.rotation.x = rotation.x;
     cylinder.rotation.y = rotation.y;

@@ -151,7 +151,7 @@ export function DrawPuma(i, a1, a2, a3, a4, a5, q) {
 
     //alfa5
     parts[i][4].position.y = -l3 / 2;
-    parts[i][4].rotation.y = Math.PI / 2;
+    parts[i][4].rotation.y = a5;
     parts[i][4].rotation.z = Math.PI;
     
 }

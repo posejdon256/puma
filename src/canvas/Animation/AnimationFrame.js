@@ -9,7 +9,8 @@ let cameras = [],
     THREE, 
     animationStarted = false,
     asnimationMoment = 0,
-    qPrevs = [];
+    qPrevs = [],
+    crossPrev;
 export function getCamera(i) {
     return cameras[i];
 }
@@ -50,7 +51,7 @@ export function _animate() {
     renderers[1].render( scenes[1], cameras[1] );
 }
 function animationStep() {
-    if(asnimationMoment > 1) {
+    if(asnimationMoment >= 1.01) {
         animationStarted = false;
         asnimationMoment = 0;
         return;
@@ -62,11 +63,11 @@ function animationStep() {
     const beta = (1 - asnimationMoment)*start.beta + end.beta * asnimationMoment;
     const gamma = (1 - asnimationMoment)*start.gamma + end.gamma * asnimationMoment;
     const p = SumPoints(Multiply(start, (1 - asnimationMoment)), Multiply(end,  asnimationMoment));
-    const conf = countInverseKinematics(alfa, beta, gamma, p, true, asnimationMoment !== 0 ? qPrevs[0] : undefined);
-    DrawPuma(0, conf.a1, conf.a2, conf.a3, conf.a4, 0, conf.q, true);
+    const conf = countInverseKinematics(alfa, beta, gamma, p, true, asnimationMoment !== 0 ? qPrevs[0] : undefined, crossPrev);
+    DrawPuma(0, conf.a1, conf.a2, conf.a3, conf.a4, conf.a5, conf.q, true);
 
-    const startSecond = getStart(1);
-    const endSecond = getEnd(1);
+    const startSecond = getStart(0);
+    const endSecond = getEnd(0);
 
     const conf1 = countInverseKinematics(startSecond.alfa, startSecond.beta, startSecond.gamma, {x: startSecond.x, y: startSecond.y, z: startSecond.z}, true);
     const conf2 = countInverseKinematics(endSecond.alfa, endSecond.beta, endSecond.gamma, {x: endSecond.x, y: endSecond.y, z: endSecond.z}, true);
@@ -79,6 +80,7 @@ function animationStep() {
     const q = (1 - asnimationMoment) * conf1.q + conf2.q * asnimationMoment;
     qPrevs = [];
     qPrevs.push(conf.p2);
+    crossPrev = conf.crossPrev;
    // qPrevs.push(q);
 
     DrawPuma(1, alfa1, alfa2, alfa3, alfa4, alfa5, q, true);

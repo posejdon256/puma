@@ -119,8 +119,8 @@ export function updateEffectorStart(configuration, event) {
     _DrawPuma();
 }
 function _DrawPuma() {
-    const conf1 = countInverseKinematics(startEffector[0].alfa, startEffector[0].beta, startEffector[0].gamma, startEffector[0], false, qPrev, crossPrev);
-    const conf2 = countInverseKinematics(startEffector[1].alfa, startEffector[1].beta, startEffector[1].gamma, startEffector[1], false, qPrev, crossPrev);
+    const conf1 = countInverseKinematics(startEffector[0].alfa, startEffector[0].beta, startEffector[0].gamma, startEffector[0], false);
+    const conf2 = countInverseKinematics(startEffector[1].alfa, startEffector[1].beta, startEffector[1].gamma, startEffector[1], false);
     DrawPuma(0, conf1.a1, conf1.a2, conf1.a3, conf1.a4, conf1.a5, conf1.q);
     DrawPuma(1, conf2.a1, conf2.a2, conf2.a3, conf2.a4, conf2.a5, conf2.q);
     qPrev = conf1.p2;

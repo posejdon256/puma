@@ -4,10 +4,10 @@ import { updateL1, updateL2, updateL3 } from '../canvas/Geometry/DrawPuma';
 let l1 = 60,
     l2 = 30,
     l3 = 30,
-    x1 = 60,
-    y1 = 0,
+    x1 = 30,
+    y1 = 20,
     z1 = 0,
-    x2 = 60,
+    x2 = 30,
     y2 = 0,
     z2 = 0,
     mode = 0; // 0 - camera, 1 - start, 2 - end

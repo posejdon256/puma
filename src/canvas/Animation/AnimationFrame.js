@@ -75,7 +75,7 @@ function getCloser(a1, a2) {
 }
 function animationStep() {
     const newDate = (new Date()).getTime();
-    asnimationMoment = (newDate - startMoment) / (getTime() * 1000);
+   // asnimationMoment = (newDate - startMoment) / (getTime() * 1000);
     let endAnimation = asnimationMoment > 1;
     if(endAnimation) {
         animationStarted = false;
@@ -98,6 +98,7 @@ function animationStep() {
     const conf1 = countInverseKinematics(angle1.a1, angle2.a1, angle3.a1, {x: start.x, y: start.y, z: start.z}, true);
     const conf2 = countInverseKinematics(angle1.a2, angle2.a2, angle3.a2, {x: end.x, y: end.y, z: end.z}, true);
 
+    
     const alfa1 = (1 - asnimationMoment) * conf1.a1 + conf2.a1 * asnimationMoment;
     const alfa2 = (1 - asnimationMoment) * conf1.a2 + conf2.a2 * asnimationMoment;
     const alfa3 = (1 - asnimationMoment) * conf1.a3 + conf2.a3 * asnimationMoment;

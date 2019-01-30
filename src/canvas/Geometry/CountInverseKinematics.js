@@ -11,20 +11,16 @@ import {
 import { getLastPoint, getX, getZ, addSphere } from './Cylinder';
 
 
-export function countInverseKinematics(alfa, beta, gamma, start, _animation, prevQ, nPrev) {
+export function countInverseKinematics(alfa, beta, gamma, start, _animation, prevQ) {
 
-    const p1 = {x:0, y:0, z:0};
     const p2 = {x:0, y: getL1()/2, z: 0};
 
     const p5 = start;
-
-    const z5 = normalize(getZ({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}));
     const x5 = normalize(getX({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}));
     const y5 = normalize(getZ({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}));
-    const v1 = DiffPoints(getLastPoint({rx: alfa, ry: beta, rz: gamma, px: start.x, py: start.y, pz: start.z}, -getL3()), start);
     const p4 = DiffPoints(p5, Multiply(x5, getL3())); 
 
-    let n024 = normalize(crossMultiply(p4, p2));
+    let n024 = crossMultiply(p4, p2);
 
     if (getVectorLength(n024)<0.0001) {
         n024 = {x:0, y:0, z:1};
@@ -36,8 +32,8 @@ export function countInverseKinematics(alfa, beta, gamma, start, _animation, pre
         z4 = normalize(DiffPoints(p2,p4));
     }
 
-    let p3 = SumPoints(p4, Multiply(z4, getL3()))
-    const p3alt = SumPoints(p4, Multiply(z4, -getL3()));
+    let p3 = SumPoints(p4, Multiply(z4, getL2()))
+    const p3alt = SumPoints(p4, Multiply(z4, -getL2()));
 
     if(prevQ && getVectorLength(DiffPoints(p3, prevQ)) > getVectorLength(DiffPoints(p3alt, prevQ))) {
         p3 = p3alt;
@@ -49,7 +45,7 @@ export function countInverseKinematics(alfa, beta, gamma, start, _animation, pre
     const a4 = Math.PI -_angle(n024, x5,DiffPoints(p3, p4));
     const a5 = Math.PI/2 + _angle(DiffPoints(p3, p4),y5, x5);
     const q = getVectorLength(DiffPoints(p3, p2));
-    const n3 = 12;
+    console.log(a1, a2, a3, a4, a5, q);
     return {a1: a1, a2: a2, a3: a3, a4: a4, a5: a5, q: q, p2: p3, crossPrev: p4};
 
 }

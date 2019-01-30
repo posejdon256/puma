@@ -16,9 +16,11 @@ export function generateArm(container, i) {
     renderer.setSize(WIDTH, HEIGHT);
     container.appendChild(renderer.domElement);
     scene.add(camera);
+    const color = new THREE.Color( 0x9674a0 );
     renderer.setSize(WIDTH, HEIGHT);
 
     camera.position.z = 200;
+    scene.background = color;
     camera.lookAt(scene.position);
     container.appendChild(renderer.domElement);
     setRenderer(renderer);
@@ -39,9 +41,15 @@ export function generateArm(container, i) {
 
     clearCylinders();
     
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-0, 10, 100);
+    const spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(10, 10, 100);
     spotLight.castShadow = true;
-    spotLight.intensity = 1;
+    spotLight.intensity = 0.7;
     scene.add(spotLight);
+
+    const spotLight2 = new THREE.SpotLight(0xffffff);
+    spotLight2.position.set(-10, 10, 100);
+    spotLight2.castShadow = true;
+    spotLight2.intensity = 0.7;
+    scene.add(spotLight2);
 }

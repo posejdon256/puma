@@ -2,6 +2,7 @@ import { Multiply, SumPoints } from '../../Helpers/Vectors';
 import { getEnd, getStart } from '../Draw/GenerateEffector';
 import { countInverseKinematics } from '../Geometry/CountInverseKinematics';
 import { DrawPuma } from '../Geometry/DrawPuma';
+import { getTime } from './Animation';
 
 let cameras = [],
     renderers = [],
@@ -10,7 +11,8 @@ let cameras = [],
     animationStarted = false,
     asnimationMoment = 0,
     qPrevs = [],
-    crossPrev;
+    crossPrev,
+    startMoment;
 export function getCamera(i) {
     return cameras[i];
 }
@@ -40,6 +42,8 @@ export function _startAnimation() {
     animationStarted = true;
     asnimationMoment = 0;
     qPrevs = [];
+    const d = new Date();
+    startMoment = d.getTime();
 }
 export function _animate() {
     if(animationStarted) {
@@ -50,27 +54,49 @@ export function _animate() {
     renderers[0].render( scenes[0], cameras[0] );
     renderers[1].render( scenes[1], cameras[1] );
 }
+function getCloser(a1, a2) {
+    if(Math.abs(a1 - a2) > Math.PI) {
+        if(a1 < a2) {
+            return {
+                a1: a1,
+                a2: a2 - (2 * Math.PI)
+            };
+        } else {
+            return {
+                a1: a1 - (2 * Math.PI),
+                a2: a2
+            };
+        }
+    }
+    return {
+        a1: a1,
+        a2: a2
+    };
+}
 function animationStep() {
-    if(asnimationMoment >= 1.01) {
+    const newDate = (new Date()).getTime();
+    asnimationMoment = (newDate - startMoment) / (getTime() * 1000);
+    let endAnimation = asnimationMoment > 1;
+    if(endAnimation) {
         animationStarted = false;
-        asnimationMoment = 0;
-        return;
+        asnimationMoment = 1;
     }
     const start = getStart(0);
     const end = getEnd(0);
 
-    const alfa = (1 - asnimationMoment)*start.alfa + end.alfa * asnimationMoment;
-    const beta = (1 - asnimationMoment)*start.beta + end.beta * asnimationMoment;
-    const gamma = (1 - asnimationMoment)*start.gamma + end.gamma * asnimationMoment;
+    const angle1 = getCloser(start.alfa, end.alfa);
+    const angle2 = getCloser(start.beta, end.beta);
+    const angle3 = getCloser(start.gamma, end.gamma);
+
+    const alfa = (1 - asnimationMoment)*angle1.a1 + angle1.a2 * asnimationMoment;
+    const beta = (1 - asnimationMoment)*angle2.a1 + angle2.a2 * asnimationMoment;
+    const gamma = (1 - asnimationMoment)*angle3.a1 + angle3.a2 * asnimationMoment;
     const p = SumPoints(Multiply(start, (1 - asnimationMoment)), Multiply(end,  asnimationMoment));
     const conf = countInverseKinematics(alfa, beta, gamma, p, true, asnimationMoment !== 0 ? qPrevs[0] : undefined, crossPrev);
     DrawPuma(0, conf.a1, conf.a2, conf.a3, conf.a4, conf.a5, conf.q, true);
 
-    const startSecond = getStart(0);
-    const endSecond = getEnd(0);
-
-    const conf1 = countInverseKinematics(startSecond.alfa, startSecond.beta, startSecond.gamma, {x: startSecond.x, y: startSecond.y, z: startSecond.z}, true);
-    const conf2 = countInverseKinematics(endSecond.alfa, endSecond.beta, endSecond.gamma, {x: endSecond.x, y: endSecond.y, z: endSecond.z}, true);
+    const conf1 = countInverseKinematics(angle1.a1, angle2.a1, angle3.a1, {x: start.x, y: start.y, z: start.z}, true);
+    const conf2 = countInverseKinematics(angle1.a2, angle2.a2, angle3.a2, {x: end.x, y: end.y, z: end.z}, true);
 
     const alfa1 = (1 - asnimationMoment) * conf1.a1 + conf2.a1 * asnimationMoment;
     const alfa2 = (1 - asnimationMoment) * conf1.a2 + conf2.a2 * asnimationMoment;

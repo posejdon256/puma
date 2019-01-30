@@ -43,6 +43,34 @@ const endEffector = [{
     beta: 0,
     gamma: (- Math.PI / 2)
 }];
+function prepareAngle(angle) {
+    while (angle < 0) {
+        angle = 360 + angle;
+    }
+    while(angle > 360) {
+        angle = angle - 360;
+    }
+    return angle;
+}
+function getCloser(a1, a2) {
+    if(Math.abs(a1 - a2) > Math.PI) {
+        if(a1 < a2) {
+            return {
+                a1: a1,
+                a2: a2 - (2 * Math.PI)
+            };
+        } else {
+            return {
+                a1: a1 - (2 * Math.PI),
+                a2: a2
+            };
+        }
+    }
+    return {
+        a1: a1,
+        a2: a2
+    };
+}
 export function setZ2(_value) {
     endEffector[0].z = TryParseFloat(_value, endEffector[0].z);
     endEffector[1].z = TryParseFloat(_value, endEffector[1].z);

@@ -30,7 +30,7 @@ export default class Navbar extends Component {
             alfa2: 0,
             beta2: 0,
             gamma2: 0,
-            speed: 100,
+            speed: 1,
             slerp: true,
             x1: 60,
             y1: 0,
@@ -307,7 +307,7 @@ export default class Navbar extends Component {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
-                            label="Speed"
+                            label="Time in seconds"
                             onChange={this._setSpeed}
                             value={this.state.speed}
                             margin="normal"

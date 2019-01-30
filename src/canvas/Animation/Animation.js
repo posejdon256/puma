@@ -15,7 +15,7 @@ let _qEnd = {x: 1, y: 1, z: 1, w: 1};
 let qStart;
 let qEnd;
 
-let speed = 10;
+let speed = 1;
 let step;
 let divisions;
 let stepInSides = {};
@@ -33,7 +33,15 @@ let slerp = true;
 let angleStep;
 
 let animationId;
-
+function prepareAngle(angle) {
+    while (angle < 0) {
+        angle = 360 + angle;
+    }
+    while(angle > 360) {
+        angle = angle - 360;
+    }
+    return angle;
+}
 export function getStartAngles() {
     return { alfa: alfa1, beta: beta1, gamma: gamma1 + Math.PI/2};
 }
@@ -43,15 +51,16 @@ export function getEndAngles() {
 export function setAlfa1(_alfa) {
     let _alfa1 = TryParseFloat(_alfa, alfa1);
     if(_alfa1 !== alfa1) {
-        _alfa1 = (_alfa1 / 180) * Math.PI;
+        _alfa1 = (prepareAngle(_alfa1) / 180) * Math.PI;
     }
     alfa1 = _alfa1;
+    console.log(prepareAngle(_alfa1));
     updateEffectorStart({alfa: _alfa1});
 }
 export function setBeta1(_beta) {
     let _beta1 = TryParseFloat(_beta, beta1);
     if(_beta1 !== beta1) {
-        _beta1 = (_beta1 / 180) * Math.PI;
+        _beta1 = (prepareAngle(_beta1) / 180) * Math.PI;
     }
     beta1 = _beta1;
     updateEffectorStart({beta: _beta1});
@@ -59,7 +68,7 @@ export function setBeta1(_beta) {
 export function setGamma1(_gamma) {
     let _gamma1 = TryParseFloat(_gamma, gamma1);
     if(_gamma1 !== gamma1) {
-        _gamma1 = (_gamma1 / 180) * Math.PI;
+        _gamma1 = (prepareAngle(_gamma1) / 180) * Math.PI;
     }
     gamma1 = _gamma1;
     updateEffectorStart({gamma: _gamma1});
@@ -67,7 +76,7 @@ export function setGamma1(_gamma) {
 export function setAlfa2(_alfa) {
     let _alfa2 = TryParseFloat(_alfa, alfa2);
     if(_alfa2 !== alfa2) {
-        _alfa2 = (_alfa2 / 180) * Math.PI;
+        _alfa2 = (prepareAngle(_alfa2) / 180) * Math.PI;
     }
     alfa2 = _alfa2;
     updateEffectorEnd({alfa: _alfa2});
@@ -75,7 +84,7 @@ export function setAlfa2(_alfa) {
 export function setBeta2(_beta) {
     let _beta2 = TryParseFloat(_beta, beta2);
     if(_beta2 !== beta2) {
-        _beta2 = (_beta2 / 180) * Math.PI;
+        _beta2 = (prepareAngle(_beta2) / 180) * Math.PI;
     }
     beta2 = _beta2;
     updateEffectorEnd({beta: _beta2});
@@ -83,10 +92,13 @@ export function setBeta2(_beta) {
 export function setGamma2(_gamma) {
     let _gamma2 = TryParseFloat(_gamma, gamma1);
     if(_gamma2 !== gamma2) {
-        _gamma2 = (_gamma2 / 180) * Math.PI;
+        _gamma2 = (prepareAngle(_gamma2) / 180) * Math.PI;
     }
     gamma2 = _gamma2;
     updateEffectorEnd({gamma: _gamma2});
+}
+export function getTime() {
+    return speed;
 }
 export function setSpeed(_speed) {
     speed = TryParseInt(_speed, speed);

@@ -75,7 +75,7 @@ function getCloser(a1, a2) {
 }
 function animationStep() {
     const newDate = (new Date()).getTime();
-   // asnimationMoment = (newDate - startMoment) / (getTime() * 1000);
+    asnimationMoment = (newDate - startMoment) / (getTime() * 1000);
     let endAnimation = asnimationMoment > 1;
     if(endAnimation) {
         animationStarted = false;

@@ -45,7 +45,7 @@ export function countInverseKinematics(alfa, beta, gamma, start, _animation, pre
     const a4 = Math.PI -_angle(n024, x5,DiffPoints(p3, p4));
     const a5 = Math.PI/2 + _angle(DiffPoints(p3, p4),y5, x5);
     const q = getVectorLength(DiffPoints(p3, p2));
-    console.log(a1, a2, a3, a4, a5, q);
+    console.log(a2);
     return {a1: a1, a2: a2, a3: a3, a4: a4, a5: a5, q: q, p2: p3, crossPrev: p4};
 
 }
